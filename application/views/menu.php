@@ -3,5 +3,15 @@
         <li><?= anchor("home/index/$categoria->id", $categoria->nombre) ?></li>
     <?php endforeach; ?>
 </ul>
-<br />
+<hr />
+<?php if($logueado): ?>
+<p>Dentro</p>
+<?php else: ?>
+<form action="<?= site_url("home/acceder") ?>" method="POST">
+    Usuario: <input type="text" name="usuario" /><br />
+    Contraseña: <input type="text" name="clave" /><br />
+    <input type="submit" value="Acceder" />
+</form>
+<?php endif; ?>
+<hr />
 <p><?= anchor("home/consultarCarrito", "Ver contenido del carrito") ?></p>

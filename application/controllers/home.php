@@ -12,7 +12,12 @@ class Home extends CI_Controller {
 
     public function index($categoria = NULL) {
 	$parametrosVistas['cabecera'] = CargaVista("cabecera");
-	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias()]);
+	if ($this->session->userdata('login')) {
+	    $logueado = TRUE;
+	} else {
+	    $logueado = FALSE;
+	}
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $logueado]);
 	$parametrosVistas['contenido'] = CargaVista("contenido", [
 	    "destacados" => $this->productos_model->listarDestacados($categoria),
 	    "productos" => $this->productos_model->listarProductos($categoria)
@@ -30,7 +35,12 @@ class Home extends CI_Controller {
 
     public function consultarCarrito() {
 	$parametrosVistas['cabecera'] = CargaVista("cabecera");
-	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias()]);
+	if ($this->session->userdata('login')) {
+	    $logueado = TRUE;
+	} else {
+	    $logueado = FALSE;
+	}
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $logueado]);
 	$carrito = $this->carrito->getContenido();
 	foreach ($carrito as &$c) {
 	    $datos = $this->productos_model->listarProducto($c['id']);
@@ -40,6 +50,15 @@ class Home extends CI_Controller {
 	$parametrosVistas['contenido'] = CargaVista("carrito", ["productos" => $carrito]);
 
 	$this->load->view("home", $parametrosVistas);
+    }
+    
+    public function acceder() {
+	if ($this->usuarios_model->existeUsuario($this->input->post('usuario'), $this->input->post('clave'))) {
+	    $this->session->set_userdata('login', $this->input->post('usuario'));
+		    redirect(site_url());
+	} else {
+	    redirect(site_url());
+	}
     }
 
 }
