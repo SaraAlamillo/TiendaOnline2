@@ -24,14 +24,13 @@ class Carrito {
     public function getContenido() {
 	return $this->contenido;
     }
-    
-    public function setContenido(array $productos) {
-	foreach ($productos as $p) {
-	    $this->contenido[$p['id']] = $p['cantidad'];
-	}
+
+    public function setContenido(array $producto) {
+	array_push($this->contenido, $producto);
+
 	$this->actualizarSesion();
     }
-    
+
     public function actualizarSesion() {
 	$this->sesion->set_userdata(["carrito" => $this->contenido]);
     }

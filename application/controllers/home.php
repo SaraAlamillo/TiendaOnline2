@@ -9,38 +9,37 @@ class Home extends CI_Controller {
 	parent::__construct();
 	$this->load->library("carrito", ["session" => $this->session]);
     }
+
     public function index($categoria = NULL) {
-	/* $parametrosVistas['cabecera'] = CargaVista("cabecera");
-	  $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias()]);
-	  $parametrosVistas['contenido'] = CargaVista("contenido", [
-	  "destacados" => $this->productos_model->listarDestacados($categoria),
-	  "productos" => $this->productos_model->listarProductos($categoria)
-	  ]);
+	$parametrosVistas['cabecera'] = CargaVista("cabecera");
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias()]);
+	$parametrosVistas['contenido'] = CargaVista("contenido", [
+	    "destacados" => $this->productos_model->listarDestacados($categoria),
+	    "productos" => $this->productos_model->listarProductos($categoria)
+	]);
 
-	  $this->load->view("home", $parametrosVistas);
+	$this->load->view("home", $parametrosVistas);
+	
+    }
 
-	  $c = Carrito::getInstance(); */
-	$nuevosdatos = [
-		[
-		    "id" => "1234",
-		    "cantidad" => "1"
-		],
-		[
-		    "id" => "124",
-		    "cantidad" => "7"
-		],
-		[
-		    "id" => "234",
-		    "cantidad" => "8"
-		]
-	    ];
-	    $this->carrito->setContenido($nuevosdatos);
-	echo "<pre>";
-	print_r($this->carrito->getContenido());
-	echo "</pre>";
-	echo "<pre>";
-	print_r($this->session->all_userdata());
-	echo "</pre>";
+    public function comprar() {
+	$this->productos_model->modificarStock($this->input->post('id'), "-", $this->input->post('cantidad'));
+	$this->carrito->setContenido($this->input->post());
+	redirect(site_url());
+    }
+
+    public function consultarCarrito() {
+	$parametrosVistas['cabecera'] = CargaVista("cabecera");
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias()]);
+	$carrito = $this->carrito->getContenido();
+	foreach ($carrito as &$c) {
+	    $datos = $this->productos_model->listarProducto($c['id']);
+	    $c['nombre'] = $datos->nombre;
+	    $c['precio'] = $datos->precio;
+	}
+	$parametrosVistas['contenido'] = CargaVista("carrito", ["productos" => $carrito]);
+
+	$this->load->view("home", $parametrosVistas);
     }
 
 }

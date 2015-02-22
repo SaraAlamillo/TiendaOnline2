@@ -29,15 +29,21 @@ if (!function_exists('generarVistaProducto')) {
 	ob_start();
 	?>
 	<div id="producto">
-	    <img src="<?= base_url() ?>assets/img/productos/<?= $producto->imagen ?>" />
-	    <p><?= $producto->nombre ?></p>
-	    <p>Stock: <?= $producto->stock ?></p>
-	    <?php if ($producto->descuento != 0): ?>
-	        <p>Precio: <strike><?= $producto->precio ?> €</strike> <?= round($producto->precio - ($producto->precio * ($producto->descuento / 100)), 2) ?> €</p>
-	<?php else: ?>
-	    <p>Precio: <?= $producto->precio ?> €</p>
-	<?php endif; ?>
+	    <form action="<?= site_url("home/comprar") ?>" method="POST">
+		<img src="<?= base_url() ?>assets/img/productos/<?= $producto->imagen ?>" />
+		<p><?= $producto->nombre ?></p>
+		<p>Stock: <?= $producto->stock ?></p>
+		<?php if ($producto->descuento != 0): ?>
+	    	<p>Precio: <strike><?= $producto->precio ?> €</strike> <?= round($producto->precio - ($producto->precio * ($producto->descuento / 100)), 2) ?> €</p>
+		<?php else: ?>
+	    	<p>Precio: <?= $producto->precio ?> €</p>
+		<?php endif; ?>
+		<input type="hidden" name="id" value="<?=$producto->id?>" />
+		<input type="text" size="5" name="cantidad" value="" /><input type="submit" value="Comprar" />
+	    </form>
 	</div>
+
+
 	<?php
 	$contenido = ob_get_clean();
 
