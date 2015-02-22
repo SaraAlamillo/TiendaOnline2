@@ -36,8 +36,8 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos.
      * @return object Listado de todos los datos de los productos.
      */
-    public function listarProductos($categoria = 0, $paginacion = NULL) {
-	if ($categoria != 0) {
+    public function listarProductos($categoria = NULL, $paginacion = NULL) {
+	if (!is_null($categoria)) {
 	    $this->db->where("categoria", $categoria);
 	}
 	if (is_null($paginacion)) {
