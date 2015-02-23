@@ -11,20 +11,18 @@ class Home extends CI_Controller {
     }
 
     public function index($categoria = NULL) {
+	echo "<pre>";
+	print_r($this->session->all_userdata());
+	echo "</pre>";
 	$parametrosVistas['cabecera'] = CargaVista("cabecera");
-	if ($this->session->userdata('login')) {
-	    $logueado = TRUE;
-	} else {
-	    $logueado = FALSE;
-	}
-	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $logueado]);
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+
 	$parametrosVistas['contenido'] = CargaVista("contenido", [
 	    "destacados" => $this->productos_model->listarDestacados($categoria),
 	    "productos" => $this->productos_model->listarProductos($categoria)
 	]);
 
 	$this->load->view("home", $parametrosVistas);
-	
     }
 
     public function comprar() {
@@ -35,30 +33,44 @@ class Home extends CI_Controller {
 
     public function consultarCarrito() {
 	$parametrosVistas['cabecera'] = CargaVista("cabecera");
-	if ($this->session->userdata('login')) {
-	    $logueado = TRUE;
-	} else {
-	    $logueado = FALSE;
-	}
-	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $logueado]);
+	$parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+
 	$carrito = $this->carrito->getContenido();
 	foreach ($carrito as &$c) {
 	    $datos = $this->productos_model->listarProducto($c['id']);
 	    $c['nombre'] = $datos->nombre;
 	    $c['precio'] = $datos->precio;
 	}
-	$parametrosVistas['contenido'] = CargaVista("carrito", ["productos" => $carrito]);
+	$parametrosVistas['contenido'] = CargaVista("carrito", ["productos" => $carrito, "logueado" => $this->logueado()]);
 
 	$this->load->view("home", $parametrosVistas);
     }
-    
+
     public function acceder() {
 	if ($this->usuarios_model->existeUsuario($this->input->post('usuario'), $this->input->post('clave'))) {
-	    $this->session->set_userdata('login', $this->input->post('usuario'));
-		    redirect(site_url());
+	    $id = $this->usuarios_model->conseguirID("usuario", $this->input->post('usuario'));
+	    $this->session->set_userdata('usuario', $id);
+	    redirect(site_url());
 	} else {
 	    redirect(site_url());
 	}
+    }
+
+    public function logueado() {
+	if ($this->session->userdata('usuario')) {
+	    return TRUE;
+	} else {
+	    return FALSE;
+	}
+    }
+
+    public function cerrarSesion() {
+	$this->session->unset_userdata('usuario');
+	redirect(site_url());
+    }
+    
+    public function tramitarComprar() {
+	
     }
 
 }
