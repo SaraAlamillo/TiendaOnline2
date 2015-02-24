@@ -39,5 +39,20 @@ class Carrito {
         $this->contenido = [];
         $this->actualizar_sesion();
     }
+    
+    public function quitar_producto($producto) {
+        $cantidad = 0;
+        foreach ($this->contenido as $key => $c) {
+            if ($c['id'] == $producto) {
+                $cantidad += $c['cantidad'];
+                unset($this->contenido[$key]);
+                break;
+            }
+        }
+        
+        $this->actualizar_sesion();
+        return $cantidad;
+        
+    }
 
 }

@@ -115,5 +115,11 @@ class Home extends CI_Controller {
 
         $this->load->view("home", $parametrosVistas);
     }
+    
+    public function eliminar_producto_carrito($producto) {
+        $cantidad = $this->carrito->quitar_producto($producto);
+        $this->productos_model->modificar_stock($producto, "+", $cantidad);
+        redirect(site_url("home/consultar_carrito"));
+    }
 
 }

@@ -12,6 +12,7 @@
 	    <td><?=$p['precio'] ?></td>
 	    <td><?=$p['cantidad'] ?></td>
 	    <td><?=$p['precio'] * $p['cantidad'] ?></td>
+	    <td><?=anchor("home/eliminar_producto_carrito/${p['id']}", "Eliminar del carrito") ?></td>
 	</tr>
 	<?php endforeach; ?>
     </table>
