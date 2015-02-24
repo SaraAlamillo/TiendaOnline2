@@ -55,10 +55,24 @@ class Pedidos_model extends CI_Model {
     }
     
    
-    public function listarProductosPedidos($usuario) {
-            $this->db->where("pedido", $usuario);
+    public function listarProductosPedido($pedido) {
+            $this->db->where("pedido", $pedido);
         $resultado = $this->db->get("linea_pedido");
+        foreach ($resultado->result() as &$r) {
+            $r->nombre = $this->productos_model->listarProducto($r->producto)->nombre;
+        }
         return $resultado->result();
     } 
+    
+    public function totalPedido($pedido) {
+        $this->db->select("precio, cantidad");
+        $this->db->where("pedido", $pedido);
+        $resultado = $this->db->get("linea_pedido");
+        $total = 0;
+        foreach ($resultado->result() as $r) {
+            $total += ($r->precio * $r->cantidad);
+        }
+        return $total;
+    }
 
 }

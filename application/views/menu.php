@@ -6,6 +6,7 @@
 <hr />
 <?php if ($logueado): ?>
     <p>Dentro</p>
+    <p><?= anchor("home/consultarPedidos", "Ver pedidos") ?></p>
     <p><?= anchor("home/cerrarSesion", "Cerrar sesión") ?></p>
 <?php else: ?>
     <form action="<?= site_url("home/acceder") ?>" method="POST">
