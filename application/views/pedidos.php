@@ -14,7 +14,7 @@
 	    <td><?=$p->fecha_pedido ?></td>
 	    <td><?=$p->fecha_entrega ?></td>
             <td><?=$p->total ?></td>
-            <td><?= anchor("home/consultarPedido/$p->id", "Más detalles") ?></td>
+            <td><?= anchor("home/consultar_pedido/$p->id", "Más detalles") ?></td>
 	</tr>
 	<?php endforeach; ?>
     </table>

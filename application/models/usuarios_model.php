@@ -14,7 +14,7 @@ class Usuarios_model extends CI_Model {
      * Devuelve un listado con todas las provincias
      * @return object Listado con todos los datos de las provincias
      */
-    public function listarProvincias() {
+    public function listar_provincias() {
         $resultado = $this->db->get("provincias");
         return $resultado->result();
     }
@@ -25,7 +25,7 @@ class Usuarios_model extends CI_Model {
      * @param string $clave Contraseña del usuario
      * @return boolean Devuelve TRUE si existe el usuario y FALSE en caso contrario
      */
-    public function existeUsuario($nombre, $clave = NULL) {
+    public function existe_usuario($nombre, $clave = NULL) {
         $datos = ['usuario' => $nombre];
         if (!is_null($clave)) {
             $datos['contrasenia'] = $clave;
@@ -43,7 +43,7 @@ class Usuarios_model extends CI_Model {
      * Comprueba si un nombre de usuario está siendo utilizado por otro
      * @param string $nombre Nombre a buscar
      */
-    public function nombreLibre($nombre) {
+    public function nombre_libre($nombre) {
         $this->db->where('usuario', $nombre);
         $resultado = $this->db->get("usuario");
         
@@ -59,7 +59,7 @@ class Usuarios_model extends CI_Model {
      * @param integer $id Identificador del usuario
      * @return object Datos del usuario
      */
-    public function listarUsuario($id) {
+    public function listar_usuario($id) {
         $where = [
             "id" => $id,
             "activo" => 1
@@ -74,7 +74,7 @@ class Usuarios_model extends CI_Model {
      * @param integer $id Identificador del usuario
      * @return boolean Devuelve TRUE si todo ha ido correctamente y FALSE en caso contrario.
      */
-    public function darDeBaja($id) {
+    public function dar_de_baja($id) {
         $this->db->where("id", $id);
         $this->db->update("usuario", ["activo" => 0]);
 
@@ -92,10 +92,10 @@ class Usuarios_model extends CI_Model {
      * Devuelve los datos del último usuario añadido en la base de datos
      * @return object Datos del usuario
      */
-    public function ultimoUsuario() {
+    public function ultimo_usuario() {
         $this->db->select("max(id) as id");
         $resultado = $this->db->get("usuario");
-        return $this->listarUsuario($resultado->row()->id);
+        return $this->listar_usuario($resultado->row()->id);
     }
 
     /**
@@ -103,7 +103,7 @@ class Usuarios_model extends CI_Model {
      * @param integer $id Identificador del usuario
      * @param array $datos Conjunto de datos nuevos que sustituirán a los antiguos.
      */
-    public function actualizarDatos($id, $datos) {
+    public function actualizar_datos($id, $datos) {
         $this->db->where("id", $id);
         $this->db->update("usuario", $datos);
     }
@@ -113,9 +113,9 @@ class Usuarios_model extends CI_Model {
      * @param array $datos Datos del nuevo usuario
      * @return boolean Devuelve el resultado de la operación: TRUE si todo ha ido correcto y FALSE en caso contrario
      */
-    public function darDeAlta($datos) {
+    public function dar_de_alta($datos) {
         $this->db->insert("usuario", $datos);
-        $ultimoUsuario = $this->ultimoUsuario();
+        $ultimoUsuario = $this->ultimo_usuario();
         foreach ($datos as $key => $value) {
             if ($value != $ultimoUsuario->$key) {
                 return FALSE;
@@ -124,11 +124,11 @@ class Usuarios_model extends CI_Model {
         return TRUE;
     }
 
-    public function restablecerContraseña($id) {
+    public function restablecer_contraseña($id) {
         //apuntes en la agenda
     }
     
-    public function conseguirID($campo, $valor) {
+    public function conseguir_id($campo, $valor) {
 	$this->db->select("id");
 	$this->db->where($campo, $valor);
 	$resultado = $this->db->get("usuario");

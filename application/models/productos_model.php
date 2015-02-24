@@ -14,18 +14,18 @@ class Productos_model extends CI_Model {
      * Devuelve el listado de todas las categorías.
      * @return object Listado de todos los datos de las categorías.
      */
-    public function listarCategorias() {
+    public function listar_categorias() {
 	$resultado = $this->db->get("categoria");
 	return $resultado->result();
     }
 
-    public function listarCategoria($id) {
+    public function listar_categoria($id) {
 	$this->db->where("id", $id);
 	$resultado = $this->db->get("categoria");
 	return $resultado->row();
     }
 
-    public function listarProducto($id) {
+    public function listar_producto($id) {
 	$this->db->where("id", $id);
 	$resultado = $this->db->get("producto");
 	return $resultado->row();
@@ -36,7 +36,7 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos.
      * @return object Listado de todos los datos de los productos.
      */
-    public function listarProductos($categoria = NULL, $paginacion = NULL) {
+    public function listar_productos($categoria = NULL, $paginacion = NULL) {
 	if (!is_null($categoria)) {
 	    $this->db->where("categoria", $categoria);
 	}
@@ -48,7 +48,7 @@ class Productos_model extends CI_Model {
 	return $resultado->result();
     }
 
-    public function numTotalProductos($categoria = NULL) {
+    public function num_total_productos($categoria = NULL) {
 	if (!is_null($categoria)) {
 	    $this->db->where("categoria", $categoria);
 	}
@@ -62,7 +62,7 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos destacados.
      * @return object Listado de todos los datos de los productos destacados.
      */
-    public function listarDestacados($categoria = NULL, $paginacion = NULL) {
+    public function listar_destacados($categoria = NULL, $paginacion = NULL) {
         if (!is_null($paginacion)) {
             $this->db->limit($paginacion["total"], $paginacion["inicio"]);
         }
@@ -80,7 +80,7 @@ class Productos_model extends CI_Model {
 	return $resultado->result();
     }
     
-    public function numTotalDestacados($categoria = NULL) {
+    public function num_total_destacados($categoria = NULL) {
 	if (!is_null($categoria)) {
 	    $this->db->where("categoria", $categoria);
 	}
@@ -94,7 +94,7 @@ class Productos_model extends CI_Model {
      * @param integer $id Identificador del producto
      * @return integer Número de elementos que hay del producto
      */
-    public function obtenerStock($id) {
+    public function obtener_stock($id) {
 	$this->db->select("stock");
 	$this->db->where("id", $id);
 	$resultado = $this->db->get("producto");
@@ -108,11 +108,11 @@ class Productos_model extends CI_Model {
      * @param integer $cantidad Cantidad para modificar el stock
      * @return boolean Devuelve el resultado de la operación: TRUE si ha ido todo correcto y FALSE en caso contrario
      */
-    public function modificarStock($id, $operacion, $cantidad) {
+    public function modificar_stock($id, $operacion, $cantidad) {
 	if ($operacion == "+") {
-	    $nuevoStock = $this->obtenerStock($id) + $cantidad;
+	    $nuevoStock = $this->obtener_stock($id) + $cantidad;
 	} elseif ($operacion == "-") {
-	    $nuevoStock = $this->obtenerStock($id) - $cantidad;
+	    $nuevoStock = $this->obtener_stock($id) - $cantidad;
 	} else {
 	    return FALSE;
 	}
@@ -120,7 +120,7 @@ class Productos_model extends CI_Model {
 	$this->db->where("id", $id);
 	$this->db->update("producto", ["stock" => $nuevoStock]);
 
-	if ($this->obtenerStock($id) == $nuevoStock) {
+	if ($this->obtener_stock($id) == $nuevoStock) {
 	    return TRUE;
 	} else {
 	    return FALSE;

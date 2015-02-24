@@ -21,23 +21,23 @@ class Carrito {
 	}
     }
 
-    public function getContenido() {
+    public function get_contenido() {
 	return $this->contenido;
     }
 
-    public function setContenido(array $producto) {
+    public function set_contenido(array $producto) {
 	array_push($this->contenido, $producto);
 
-	$this->actualizarSesion();
+	$this->actualizar_sesion();
     }
 
-    public function actualizarSesion() {
+    public function actualizar_sesion() {
 	$this->sesion->set_userdata(["carrito" => $this->contenido]);
     }
     
-    public function vaciarCarrito() {
+    public function vaciar_carrito() {
         $this->contenido = [];
-        $this->actualizarSesion();
+        $this->actualizar_sesion();
     }
 
 }

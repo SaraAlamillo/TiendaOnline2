@@ -10,15 +10,15 @@ if (!defined('BASEPATH'))
  */
 class Pedidos_model extends CI_Model {
 
-    public function ultimoPedido($usuario) {
+    public function ultimo_pedido($usuario) {
         $this->db->select("max(id) as id");
         $this->db->where('usuario', $usuario);
         $resultado = $this->db->get("pedido");
         return $resultado->row()->id;
     }
 
-    public function crearPedido($usuario) {
-        $datosUsuario = $this->usuarios_model->listarUsuario($usuario);
+    public function crear_pedido($usuario) {
+        $datosUsuario = $this->usuarios_model->listar_usuario($usuario);
         $datos = [
             'usuario' => $datosUsuario->id,
             'nombre' => $datosUsuario->nombre,
@@ -29,12 +29,12 @@ class Pedidos_model extends CI_Model {
         ];
         $this->db->insert("pedido", $datos);
         
-        return $this->ultimoPedido($usuario);
+        return $this->ultimo_pedido($usuario);
     }
 
-    public function agregarProductos($pedido, array $productos) {
+    public function agregar_productos($pedido, array $productos) {
         foreach ($productos as $p) {
-            $datosProducto = $this->productos_model->listarProducto($p['id']);
+            $datosProducto = $this->productos_model->listar_producto($p['id']);
             $datos = [
                 "producto" => $p['id'],
                 "pedido" => $pedido,
@@ -46,7 +46,7 @@ class Pedidos_model extends CI_Model {
         }
     }
 
-    public function listarPedidos($usuario = NULL) {
+    public function listar_pedidos($usuario = NULL) {
         if (!is_null($usuario)) {
             $this->db->where("usuario", $usuario);
         }
@@ -55,16 +55,16 @@ class Pedidos_model extends CI_Model {
     }
     
    
-    public function listarProductosPedido($pedido) {
+    public function listar_productos_pedido($pedido) {
             $this->db->where("pedido", $pedido);
         $resultado = $this->db->get("linea_pedido");
         foreach ($resultado->result() as &$r) {
-            $r->nombre = $this->productos_model->listarProducto($r->producto)->nombre;
+            $r->nombre = $this->productos_model->listar_producto($r->producto)->nombre;
         }
         return $resultado->result();
     } 
     
-    public function totalPedido($pedido) {
+    public function total_pedido($pedido) {
         $this->db->select("precio, cantidad");
         $this->db->where("pedido", $pedido);
         $resultado = $this->db->get("linea_pedido");

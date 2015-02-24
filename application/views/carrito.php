@@ -17,7 +17,7 @@
     </table>
     <br />
     <?php if ($logueado): ?>
-    <button><?= anchor("home/tramitarCompra", "Comprar productos") ?></button>
+    <button><?= anchor("home/tramitar_compra", "Comprar productos") ?></button>
     <?php else: ?>
     <button disabled="disabled">Comprar productos</button> <br />
     <small>Debe iniciar sesión para continuar con la compra</small>

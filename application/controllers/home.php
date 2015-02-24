@@ -11,16 +11,12 @@ class Home extends CI_Controller {
     }
 
     public function index($categoria = NULL) {
-        echo "<pre>";
-        print_r($this->session->all_userdata());
-        echo "</pre>";
-        
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
        
         $parametrosVistas['contenido'] = CargaVista("contenido", [
-            "destacados" => $this->productos_model->listarDestacados($categoria),
-            "productos" => $this->productos_model->listarProductos($categoria),
+            "destacados" => $this->productos_model->listar_destacados($categoria),
+            "productos" => $this->productos_model->listar_productos($categoria),
             "error" => $this->session->flashdata("mensaje")
         ]);
 
@@ -28,9 +24,9 @@ class Home extends CI_Controller {
     }
 
     public function comprar() {
-        if ($this->input->post('cantidad') <= $this->productos_model->obtenerStock($this->input->post('id'))) {
-            $this->productos_model->modificarStock($this->input->post('id'), "-", $this->input->post('cantidad'));
-            $this->carrito->setContenido([
+        if ($this->input->post('cantidad') <= $this->productos_model->obtener_stock($this->input->post('id'))) {
+            $this->productos_model->modificar_stock($this->input->post('id'), "-", $this->input->post('cantidad'));
+            $this->carrito->set_contenido([
                 "id" => $this->input->post('id'), 
                 "cantidad" => $this->input->post('cantidad')
                     ]);
@@ -40,13 +36,13 @@ class Home extends CI_Controller {
         redirect($this->input->post('url'));
     }
 
-    public function consultarCarrito() {
+    public function consultar_carrito() {
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
 
-        $carrito = $this->carrito->getContenido();
+        $carrito = $this->carrito->get_contenido();
         foreach ($carrito as &$c) {
-            $datos = $this->productos_model->listarProducto($c['id']);
+            $datos = $this->productos_model->listar_producto($c['id']);
             $c['nombre'] = $datos->nombre;
             $c['precio'] = $datos->precio;
         }
@@ -56,8 +52,8 @@ class Home extends CI_Controller {
     }
 
     public function acceder() {
-        if ($this->usuarios_model->existeUsuario($this->input->post('usuario'), $this->input->post('clave'))) {
-            $id = $this->usuarios_model->conseguirID("usuario", $this->input->post('usuario'));
+        if ($this->usuarios_model->existe_usuario($this->input->post('usuario'), $this->input->post('clave'))) {
+            $id = $this->usuarios_model->conseguir_id("usuario", $this->input->post('usuario'));
             $this->session->set_userdata('usuario', $id);
             redirect(site_url());
         } else {
@@ -73,36 +69,36 @@ class Home extends CI_Controller {
         }
     }
 
-    public function cerrarSesion() {
+    public function cerra_sesion() {
         $this->session->unset_userdata('usuario');
         redirect(site_url());
     }
 
-    public function tramitarCompra() {
-        $pedido = $this->pedidos_model->crearPedido($this->session->userdata('usuario'));
-        $this->pedidos_model->agregarProductos($pedido, $this->carrito->getContenido());
-        $this->carrito->vaciarCarrito();
+    public function tramitar_compra() {
+        $pedido = $this->pedidos_model->crear_pedido($this->session->userdata('usuario'));
+        $this->pedidos_model->agregar_productos($pedido, $this->carrito->get_contenido());
+        $this->carrito->vaciar_carrito();
         redirect(site_url());
     }
 
-    public function consultarPedidos() {
+    public function consultar_pedidos() {
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
 
-        $pedidos = $this->pedidos_model->listarPedidos($this->session->userdata('usuario'));
+        $pedidos = $this->pedidos_model->listar_pedidos($this->session->userdata('usuario'));
         foreach ($pedidos as &$p) {
-            $p->total = $this->pedidos_model->totalPedido($p->id);
+            $p->total = $this->pedidos_model->total_pedido($p->id);
         }
         $parametrosVistas['contenido'] = CargaVista("pedidos", ["pedidos" => $pedidos]);
 
         $this->load->view("home", $parametrosVistas);
     }
 
-    public function consultarPedido($pedido) {
+    public function consultar_pedido($pedido) {
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
 
-        $contenidoPedido = $this->pedidos_model->listarProductosPedido($pedido);
+        $contenidoPedido = $this->pedidos_model->listar_productos_pedido($pedido);
 
         $parametrosVistas['contenido'] = CargaVista("contenido_pedido", ["contenido" => $contenidoPedido]);
 
