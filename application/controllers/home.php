@@ -10,12 +10,23 @@ class Home extends CI_Controller {
         $this->load->library("carrito", ["session" => $this->session]);
     }
 
-    public function index($categoria = NULL) {
+    public function index() {
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
         $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
        
-        $parametrosVistas['contenido'] = CargaVista("contenido", [
-            "destacados" => $this->productos_model->listar_destacados($categoria),
+        $parametrosVistas['contenido'] = CargaVista("productos", [
+            "productos" => $this->productos_model->listar_destacados(),
+            "error" => $this->session->flashdata("mensaje")
+        ]);
+
+        $this->load->view("home", $parametrosVistas);
+    }
+
+    public function ver_categoria($categoria = NULL) {
+        $parametrosVistas['cabecera'] = CargaVista("cabecera");
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
+       
+        $parametrosVistas['contenido'] = CargaVista("productos", [
             "productos" => $this->productos_model->listar_productos($categoria),
             "error" => $this->session->flashdata("mensaje")
         ]);

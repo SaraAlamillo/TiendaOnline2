@@ -1,7 +1,7 @@
 <ul>
-    <li><?= anchor("home/index", "Home") ?></li>
+    <li><?= anchor("", "Home") ?></li>
     <?php foreach ($categorias as $categoria): ?>
-        <li><?= anchor("home/index/$categoria->id", $categoria->nombre) ?></li>
+        <li><?= anchor("home/ver_categoria/$categoria->id", $categoria->nombre) ?></li>
     <?php endforeach; ?>
 </ul>
 <hr />
