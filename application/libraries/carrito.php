@@ -34,5 +34,10 @@ class Carrito {
     public function actualizarSesion() {
 	$this->sesion->set_userdata(["carrito" => $this->contenido]);
     }
+    
+    public function vaciarCarrito() {
+        $this->contenido = [];
+        $this->actualizarSesion();
+    }
 
 }

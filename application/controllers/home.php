@@ -69,8 +69,11 @@ class Home extends CI_Controller {
 	redirect(site_url());
     }
     
-    public function tramitarComprar() {
-	
+    public function tramitarCompra() {
+	$pedido = $this->pedidos_model->crearPedido($this->session->userdata('usuario'));
+$this->pedidos_model->agregarProductos($pedido, $this->carrito->getContenido());
+        $this->carrito->vaciarCarrito();
+        redirect(site_url());
     }
 
 }

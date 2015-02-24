@@ -127,5 +127,12 @@ class Usuarios_model extends CI_Model {
     public function restablecerContraseña($id) {
         //apuntes en la agenda
     }
+    
+    public function conseguirID($campo, $valor) {
+	$this->db->select("id");
+	$this->db->where($campo, $valor);
+	$resultado = $this->db->get("usuario");
+	return $resultado->row()->id;
+    }
 
 }
