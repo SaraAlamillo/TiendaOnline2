@@ -14,21 +14,30 @@ class Home extends CI_Controller {
         echo "<pre>";
         print_r($this->session->all_userdata());
         echo "</pre>";
+        
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
         $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
-
+       
         $parametrosVistas['contenido'] = CargaVista("contenido", [
             "destacados" => $this->productos_model->listarDestacados($categoria),
-            "productos" => $this->productos_model->listarProductos($categoria)
+            "productos" => $this->productos_model->listarProductos($categoria),
+            "error" => $this->session->flashdata("mensaje")
         ]);
 
         $this->load->view("home", $parametrosVistas);
     }
 
     public function comprar() {
-        $this->productos_model->modificarStock($this->input->post('id'), "-", $this->input->post('cantidad'));
-        $this->carrito->setContenido($this->input->post());
-        redirect(site_url());
+        if ($this->input->post('cantidad') <= $this->productos_model->obtenerStock($this->input->post('id'))) {
+            $this->productos_model->modificarStock($this->input->post('id'), "-", $this->input->post('cantidad'));
+            $this->carrito->setContenido([
+                "id" => $this->input->post('id'), 
+                "cantidad" => $this->input->post('cantidad')
+                    ]);
+        } else {
+            $this->session->set_flashdata("mensaje", ['id' => $this->input->post('id'), 'mensaje' => 'No hay suficiente stock']);
+        }
+        redirect($this->input->post('url'));
     }
 
     public function consultarCarrito() {
@@ -88,12 +97,13 @@ class Home extends CI_Controller {
 
         $this->load->view("home", $parametrosVistas);
     }
+
     public function consultarPedido($pedido) {
         $parametrosVistas['cabecera'] = CargaVista("cabecera");
         $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listarCategorias(), "logueado" => $this->logueado()]);
 
         $contenidoPedido = $this->pedidos_model->listarProductosPedido($pedido);
-        
+
         $parametrosVistas['contenido'] = CargaVista("contenido_pedido", ["contenido" => $contenidoPedido]);
 
         $this->load->view("home", $parametrosVistas);

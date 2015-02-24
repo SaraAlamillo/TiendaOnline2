@@ -1,4 +1,5 @@
 <ul>
+    <li><?= anchor("home/index", "Home") ?></li>
     <?php foreach ($categorias as $categoria): ?>
         <li><?= anchor("home/index/$categoria->id", $categoria->nombre) ?></li>
     <?php endforeach; ?>
