@@ -28,9 +28,10 @@ class Usuarios extends CI_Controller {
             $this->form_validation->set_rules('provincia', 'provincia', 'callback_provincia_check');
 
             if ($this->form_validation->run()) {
-                echo "<pre>";
-                print_r($this->input->post());
-                echo "</pre>";
+                $this->usuarios_model->dar_de_alta($this->input->post());
+                $id = $this->usuarios_model->conseguir_id("usuario", $this->input->post('usuario'));
+            $this->session->set_userdata('usuario', $id);
+                redirect(site_url());
             }
         }
         $parametrosVistas['cabecera'] = CargaVista("cabecera");

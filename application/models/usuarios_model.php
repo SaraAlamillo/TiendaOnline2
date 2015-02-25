@@ -39,6 +39,7 @@ class Usuarios_model extends CI_Model {
             return FALSE;
         }
     }
+
     /**
      * Comprueba si un nombre de usuario está siendo utilizado por otro
      * @param string $nombre Nombre a buscar
@@ -46,7 +47,7 @@ class Usuarios_model extends CI_Model {
     public function nombre_libre($nombre) {
         $this->db->where('usuario', $nombre);
         $resultado = $this->db->get("usuario");
-        
+
         if ($resultado->result()) {
             return FALSE;
         } else {
@@ -113,7 +114,13 @@ class Usuarios_model extends CI_Model {
      * @param array $datos Datos del nuevo usuario
      * @return boolean Devuelve el resultado de la operación: TRUE si todo ha ido correcto y FALSE en caso contrario
      */
-    public function dar_de_alta($datos) {
+    public function dar_de_alta($datos, $administrador = FALSE) {
+        $datos['activo'] = 1;
+        if ($administrador) {
+            $datos['rol'] = 'Administrador';
+        } else {
+            $datos['rol'] = 'Usuario';
+        }
         $this->db->insert("usuario", $datos);
         $ultimoUsuario = $this->ultimo_usuario();
         foreach ($datos as $key => $value) {
@@ -127,12 +134,12 @@ class Usuarios_model extends CI_Model {
     public function restablecer_contraseña($id) {
         //apuntes en la agenda
     }
-    
+
     public function conseguir_id($campo, $valor) {
-	$this->db->select("id");
-	$this->db->where($campo, $valor);
-	$resultado = $this->db->get("usuario");
-	return $resultado->row()->id;
+        $this->db->select("id");
+        $this->db->where($campo, $valor);
+        $resultado = $this->db->get("usuario");
+        return $resultado->row()->id;
     }
 
 }
