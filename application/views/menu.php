@@ -15,7 +15,7 @@
         Contraseña: <input type="text" name="clave" /><br />
         <input type="submit" value="Acceder" />
     </form>
-    <p><?= anchor("home/registrar_usuario", "Nuevo usuario") ?></p>
+    <p><?= anchor("usuarios/registro", "Nuevo usuario") ?></p>
 <?php endif; ?>
 <hr />
 <p><?= anchor("home/consultar_carrito", "Ver contenido del carrito") ?></p>

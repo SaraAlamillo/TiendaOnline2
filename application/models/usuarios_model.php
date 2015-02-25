@@ -48,9 +48,9 @@ class Usuarios_model extends CI_Model {
         $resultado = $this->db->get("usuario");
         
         if ($resultado->result()) {
-            return TRUE;
-        } else {
             return FALSE;
+        } else {
+            return TRUE;
         }
     }
 

@@ -80,7 +80,7 @@ class Home extends CI_Controller {
         }
     }
 
-    public function cerra_sesion() {
+    public function cerrar_sesion() {
         $this->session->unset_userdata('usuario');
         redirect(site_url());
     }
@@ -122,35 +122,6 @@ class Home extends CI_Controller {
         redirect(site_url("home/consultar_carrito"));
     }
 
-    public function registrar_usuario() {
-            $this->load->helper('form');
-            $this->load->library('form_validation');
-        if ($this->input->post()) {
-
-            $this->form_validation->set_rules('usuario', 'Usuario', 'required');
-            $this->form_validation->set_rules('contrasenia', 'Contraseña', 'required');
-            $this->form_validation->set_rules('email', 'Correo electrónico', 'required');
-            $this->form_validation->set_rules('nombre', 'Nombre', 'required');
-            $this->form_validation->set_rules('apellidos', 'Apellidos', 'required');
-            $this->form_validation->set_rules('dni', 'DNI', 'required');
-            $this->form_validation->set_rules('direccion', 'Dirección', 'required');
-            $this->form_validation->set_rules('cp', 'Código postal', 'required');
-            $this->form_validation->set_rules('provincia', 'Provincia', 'required');
-
-            if ($this->form_validation->run()) {
-                echo "ok";      
-            } else {
-             echo "no ok";   
-            }
-        } else {
-            $parametrosVistas['cabecera'] = CargaVista("cabecera");
-            $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-
-
-            $parametrosVistas['contenido'] = CargaVista("registro", ["provincias" => $this->usuarios_model->listar_provincias()]);
-
-            $this->load->view("home", $parametrosVistas);
-        }
-    }
+    
 
 }
