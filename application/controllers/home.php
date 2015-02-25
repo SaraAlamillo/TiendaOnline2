@@ -122,6 +122,12 @@ class Home extends CI_Controller {
         redirect(site_url("home/consultar_carrito"));
     }
 
-    
+    public function vaciar_carrito() {
+        foreach ($this->carrito->get_contenido() as $c) {
+            $cantidad = $this->carrito->quitar_producto($c['id']);
+            $this->productos_model->modificar_stock($c['id'], "+", $cantidad);
+        }
+        redirect(site_url("home/consultar_carrito"));
+    }
 
 }

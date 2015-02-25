@@ -19,6 +19,8 @@
     <br />
     <?php if ($logueado): ?>
     <button><?= anchor("home/tramitar_compra", "Comprar productos") ?></button>
+    <button><?= anchor("home/vaciar_carrito", "Vaciar carrito") ?></button>
+    
     <?php else: ?>
     <button disabled="disabled">Comprar productos</button> <br />
     <small>Debe iniciar sesión para continuar con la compra</small>
