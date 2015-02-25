@@ -55,3 +55,31 @@ if (!function_exists('generarVistaProducto')) {
     }
 
 }
+if (!function_exists('creaListaDesplegable')) {
+
+    function creaListaDesplegable(
+    $nombre, $datos, $valorPorDefecto = NULL, $nullValue = NULL, $camposDatos = ['desc' => 'nombre', 'valor' => 'id']) {
+	$html = "<select name='$nombre'>\n";
+
+	if (is_array($nullValue)) {
+	    if ($nullValue[$camposDatos['valor']] == $valorPorDefecto) {
+		$html .= "<option value='{$nullValue[$camposDatos['valor']]}' selected='selected'>{$nullValue[$camposDatos['desc']]}</option>\n";
+	    } else {
+		$html .= "<option value='{$nullValue[$camposDatos['valor']]}'>{$nullValue[$camposDatos['desc']]}</option>\n";
+	    }
+	}
+
+	foreach ($datos as $d) {
+	    if ($d->$camposDatos['valor'] == $valorPorDefecto) {
+		$html .= "<option value='{$d->$camposDatos['valor']}' selected='selected'>{$d->$camposDatos['desc']}</option>\n";
+	    } else {
+		$html .= "<option value='{$d->$camposDatos['valor']}'>{$d->$camposDatos['desc']}</option>\n";
+	    }
+	}
+
+	$html .= "</select>\n";
+
+	return $html;
+    }
+
+}

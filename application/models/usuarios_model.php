@@ -15,7 +15,7 @@ class Usuarios_model extends CI_Model {
      * @return object Listado con todos los datos de las provincias
      */
     public function listar_provincias() {
-        $resultado = $this->db->get("provincias");
+        $resultado = $this->db->get("provincia");
         return $resultado->result();
     }
 
