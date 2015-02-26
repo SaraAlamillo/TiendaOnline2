@@ -7,6 +7,7 @@
 <hr />
 <?php if ($logueado): ?>
     <p>Dentro</p>
+    <p><?= anchor("usuarios/modificacion", "Mi cuenta") ?></p>
     <p><?= anchor("home/consultar_pedidos", "Ver pedidos") ?></p>
     <p><?= anchor("home/cerrar_sesion", "Cerrar sesión") ?></p>
 <?php else: ?>

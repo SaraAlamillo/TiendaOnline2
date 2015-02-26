@@ -9,12 +9,7 @@ class Usuarios extends CI_Controller {
         parent::__construct();
         $this->load->helper('form');
         $this->load->library('form_validation');
-    }
-
-    public function registro() {
-
-        if ($this->input->post()) {
-            $this->form_validation->set_message('required', 'El campo %s no puede estar vacío');
+        $this->form_validation->set_message('required', 'El campo %s no puede estar vacío');
             $this->form_validation->set_message('valid_email', 'El campo %s debe tener una dirección válida');
 
             $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
@@ -26,6 +21,13 @@ class Usuarios extends CI_Controller {
             $this->form_validation->set_rules('direccion', 'dirección', 'callback_direccion_check');
             $this->form_validation->set_rules('cp', 'código postal', 'callback_cp_check');
             $this->form_validation->set_rules('provincia', 'provincia', 'callback_provincia_check');
+    }
+
+    public function registro() {
+
+            $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
+        if ($this->input->post()) {
+            
 
             if ($this->form_validation->run()) {
                 $this->usuarios_model->dar_de_alta($this->input->post());
@@ -39,6 +41,33 @@ class Usuarios extends CI_Controller {
 
 
         $parametrosVistas['contenido'] = CargaVista("registro", ["provincias" => $this->usuarios_model->listar_provincias()]);
+
+        $this->load->view("home", $parametrosVistas);
+    }
+    
+    public function modificacion() {
+            $this->form_validation->set_rules('usuario', 'usuario', 'required');
+        $datos = $this->usuarios_model->listar_usuario($this->session->userdata('usuario'));
+        if ($this->input->post()) {
+            if ($this->form_validation->run()) {
+                $datos_nuevos = [];
+                $campos_actualizados = [];
+                foreach ($this->input->post() as $key => $value) {
+                    if ($value != $datos->$key) {
+                        $datos_nuevos[$key] = $value;
+                        array_push($campos_actualizados, $key);
+                    }
+                }
+                if (! empty($datos_nuevos)) {
+                $this->usuarios_model->actualizar_datos($this->session->userdata('usuario'), $datos_nuevos);
+                $this->session->set_flashdata("mensaje", "Se han actualizado correctamente: " . implode(", ", $campos_actualizados));
+                }
+                redirect(site_url("usuarios/modificacion"));
+            }
+        }
+        $parametrosVistas['cabecera'] = CargaVista("cabecera");
+        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
+        $parametrosVistas['contenido'] = CargaVista("modificacion", ["provincias" => $this->usuarios_model->listar_provincias(), "datos" => $datos, "mensaje" => $this->session->flashdata("mensaje")]);
 
         $this->load->view("home", $parametrosVistas);
     }
