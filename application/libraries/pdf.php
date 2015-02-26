@@ -12,4 +12,13 @@ class PDF extends FPDF {
         parent::__construct();
     }
 
+    function Footer() {
+
+        $this->SetY(-10);
+
+        $this->SetFont('Arial', 'I', 8);
+
+        $this->Cell(0, 10, utf8_decode('Página ') . $this->PageNo() . '/{nb}', 0, 0, 'C');
+    }
+
 }
