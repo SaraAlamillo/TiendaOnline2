@@ -23,4 +23,5 @@
         <?= form_error('provincia') . "<br />" ?>
         <input type="submit" value="Completar registro" />
     </form>
+    <button><?= anchor("usuarios/quitar_usuario", "Darme de baja") ?></button>
 </div>

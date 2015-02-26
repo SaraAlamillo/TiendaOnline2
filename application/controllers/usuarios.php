@@ -10,29 +10,29 @@ class Usuarios extends CI_Controller {
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->form_validation->set_message('required', 'El campo %s no puede estar vacío');
-            $this->form_validation->set_message('valid_email', 'El campo %s debe tener una dirección válida');
+        $this->form_validation->set_message('valid_email', 'El campo %s debe tener una dirección válida');
 
-            $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
-            $this->form_validation->set_rules('contrasenia', 'contraseña', 'required');
-            $this->form_validation->set_rules('email', 'correo electrónico', 'required|valid_email');
-            $this->form_validation->set_rules('nombre', 'nombre', 'callback_nombre_check');
-            $this->form_validation->set_rules('apellidos', 'apellidos', 'callback_nombre_check');
-            $this->form_validation->set_rules('dni', 'DNI', 'callback_dni_check');
-            $this->form_validation->set_rules('direccion', 'dirección', 'callback_direccion_check');
-            $this->form_validation->set_rules('cp', 'código postal', 'callback_cp_check');
-            $this->form_validation->set_rules('provincia', 'provincia', 'callback_provincia_check');
+        $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
+        $this->form_validation->set_rules('contrasenia', 'contraseña', 'required');
+        $this->form_validation->set_rules('email', 'correo electrónico', 'required|valid_email');
+        $this->form_validation->set_rules('nombre', 'nombre', 'callback_nombre_check');
+        $this->form_validation->set_rules('apellidos', 'apellidos', 'callback_nombre_check');
+        $this->form_validation->set_rules('dni', 'DNI', 'callback_dni_check');
+        $this->form_validation->set_rules('direccion', 'dirección', 'callback_direccion_check');
+        $this->form_validation->set_rules('cp', 'código postal', 'callback_cp_check');
+        $this->form_validation->set_rules('provincia', 'provincia', 'callback_provincia_check');
     }
 
     public function registro() {
 
-            $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
+        $this->form_validation->set_rules('usuario', 'usuario', 'callback_usuario_check');
         if ($this->input->post()) {
-            
+
 
             if ($this->form_validation->run()) {
                 $this->usuarios_model->dar_de_alta($this->input->post());
                 $id = $this->usuarios_model->conseguir_id("usuario", $this->input->post('usuario'));
-            $this->session->set_userdata('usuario', $id);
+                $this->session->set_userdata('usuario', $id);
                 redirect(site_url());
             }
         }
@@ -44,9 +44,9 @@ class Usuarios extends CI_Controller {
 
         $this->load->view("home", $parametrosVistas);
     }
-    
+
     public function modificacion() {
-            $this->form_validation->set_rules('usuario', 'usuario', 'required');
+        $this->form_validation->set_rules('usuario', 'usuario', 'required');
         $datos = $this->usuarios_model->listar_usuario($this->session->userdata('usuario'));
         if ($this->input->post()) {
             if ($this->form_validation->run()) {
@@ -58,9 +58,9 @@ class Usuarios extends CI_Controller {
                         array_push($campos_actualizados, $key);
                     }
                 }
-                if (! empty($datos_nuevos)) {
-                $this->usuarios_model->actualizar_datos($this->session->userdata('usuario'), $datos_nuevos);
-                $this->session->set_flashdata("mensaje", "Se han actualizado correctamente: " . implode(", ", $campos_actualizados));
+                if (!empty($datos_nuevos)) {
+                    $this->usuarios_model->actualizar_datos($this->session->userdata('usuario'), $datos_nuevos);
+                    $this->session->set_flashdata("mensaje", "Se han actualizado correctamente: " . implode(", ", $campos_actualizados));
                 }
                 redirect(site_url("usuarios/modificacion"));
             }
@@ -152,6 +152,11 @@ class Usuarios extends CI_Controller {
         } else {
             return FALSE;
         }
+    }
+
+    public function quitar_usuario() {
+        $this->usuarios_model->actualizar_datos($this->session->userdata('usuario'), ['activo' => 0]);
+        redirect(site_url("home/cerrar_sesion"));
     }
 
 }
