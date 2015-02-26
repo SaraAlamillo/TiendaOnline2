@@ -130,4 +130,21 @@ class Home extends CI_Controller {
         redirect(site_url("home/consultar_carrito"));
     }
 
+    public function generar_factura($id_pedido) {
+        ob_clean();
+        $pedido = $this->pedidos_model->listar_pedido($id_pedido);
+        $lineas_pedido = $this->pedidos_model->listar_productos_pedido($id_pedido);
+        
+        $this->pdf = new PDF();
+        $this->pdf->AddPage();
+        $this->pdf->AliasNbPages();
+        
+        $this->pdf->SetTitle("Prueba");
+        $this->pdf->SetLeftMargin(15);
+        $this->pdf->SetRightMargin(15);
+        $this->pdf->SetFillColor(200,200,200);
+        
+        $this->pdf->Output("Prueba.pdf", 'I');
+    }
+
 }

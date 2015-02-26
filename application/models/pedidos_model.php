@@ -53,6 +53,12 @@ class Pedidos_model extends CI_Model {
         $resultado = $this->db->get("pedido");
         return $resultado->result();
     }
+
+    public function listar_pedido($pedido) {
+            $this->db->where("id", $pedido);
+        $resultado = $this->db->get("pedido");
+        return $resultado->row();
+    }
     
    
     public function listar_productos_pedido($pedido) {
