@@ -1,28 +1,4 @@
 <?php
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
-
-if (!function_exists('CargaVista')) {
-
-    function CargaVista($fichero, array $variablesDeVista = NULL) {
-	if (!file_exists(APPPATH . "views/" . $fichero . ".php")) {
-	    return "No existe la vista $fichero"; // Nada que incluir
-	}
-	if (!is_null($variablesDeVista)) {
-	    // Creamos variables que hemos pasado en el array
-	    foreach ($variablesDeVista as $nombreVariableArrayEnForeach => $valorVariableArray) {   // OJO al doble $
-		$$nombreVariableArrayEnForeach = $valorVariableArray;
-	    }
-	}
-	// Interpretamos plantilla
-	ob_start();
-	include(APPPATH . "views/" . $fichero . ".php");
-	$contenido = ob_get_clean();
-
-	return $contenido;
-    }
-
-}
 if (!function_exists('generarVistaProducto')) {
 
     function generarVistaProducto($producto, $error) {

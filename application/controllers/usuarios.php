@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Usuarios extends CI_Controller {
+class Usuarios extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -36,13 +36,14 @@ class Usuarios extends CI_Controller {
                 redirect(site_url());
             }
         }
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
 
+        $parametrosContenido = [
+            "provincias" => $this->usuarios_model->listar_provincias()
+        ];
 
-        $parametrosVistas['contenido'] = CargaVista("registro", ["provincias" => $this->usuarios_model->listar_provincias()]);
+        $contenido = $this->load->view("registro", $parametrosContenido, TRUE);
 
-        $this->load->view("home", $parametrosVistas);
+        $this->vista($contenido);
     }
 
     public function modificacion() {
@@ -65,11 +66,16 @@ class Usuarios extends CI_Controller {
                 redirect(site_url("usuarios/modificacion"));
             }
         }
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-        $parametrosVistas['contenido'] = CargaVista("modificacion", ["provincias" => $this->usuarios_model->listar_provincias(), "datos" => $datos, "mensaje" => $this->session->flashdata("mensaje")]);
 
-        $this->load->view("home", $parametrosVistas);
+        $parametrosContenido = [
+            "provincias" => $this->usuarios_model->listar_provincias(), 
+            "datos" => $datos, 
+            "mensaje" => $this->session->flashdata("mensaje")
+                ];
+
+        $contenido = $this->load->view("modificacion", $parametrosContenido, TRUE);
+
+        $this->vista($contenido);
     }
 
     public function usuario_check($input) {

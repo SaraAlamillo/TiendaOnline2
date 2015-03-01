@@ -3,35 +3,35 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Home extends CI_Controller {
+class Home extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
         $this->load->library("carrito", ["session" => $this->session]);
     }
+    
+    
 
     public function index() {
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-
-        $parametrosVistas['contenido'] = CargaVista("productos", [
+        $parametrosContenido = [
             "productos" => $this->productos_model->listar_destacados(),
             "error" => $this->session->flashdata("mensaje")
-        ]);
+        ];
+        $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
+        
+        $this->vista($contenido);
 
-        $this->load->view("home", $parametrosVistas);
     }
 
     public function ver_categoria($categoria = NULL) {
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-
-        $parametrosVistas['contenido'] = CargaVista("productos", [
+        $parametrosContenido = [
             "productos" => $this->productos_model->listar_productos($categoria),
             "error" => $this->session->flashdata("mensaje")
-        ]);
+        ];
 
-        $this->load->view("home", $parametrosVistas);
+        $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
+        
+        $this->vista($contenido);
     }
 
     public function comprar() {
@@ -48,18 +48,21 @@ class Home extends CI_Controller {
     }
 
     public function consultar_carrito() {
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-
         $carrito = $this->carrito->get_contenido();
+        
         foreach ($carrito as &$c) {
             $datos = $this->productos_model->listar_producto($c['id']);
             $c['nombre'] = $datos->nombre;
             $c['precio'] = $datos->precio;
         }
-        $parametrosVistas['contenido'] = CargaVista("carrito", ["productos" => $carrito, "logueado" => $this->logueado()]);
+        
+        $parametrosContenido = [
+            "productos" => $carrito, 
+            "logueado" => $this->logueado()
+                ];
+        $contenido = $this->load->view("carrito", $parametrosContenido, TRUE);
 
-        $this->load->view("home", $parametrosVistas);
+        $this->vista($contenido);
     }
 
     public function acceder() {
@@ -72,13 +75,6 @@ class Home extends CI_Controller {
         }
     }
 
-    public function logueado() {
-        if ($this->session->userdata('usuario')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
 
     public function cerrar_sesion() {
         $this->session->unset_userdata('usuario');
@@ -93,27 +89,29 @@ class Home extends CI_Controller {
     }
 
     public function consultar_pedidos() {
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
-
         $pedidos = $this->pedidos_model->listar_pedidos($this->session->userdata('usuario'));
+        
         foreach ($pedidos as &$p) {
             $p->total = $this->pedidos_model->total_pedido($p->id);
         }
-        $parametrosVistas['contenido'] = CargaVista("pedidos", ["pedidos" => $pedidos]);
+        
+        $parametrosContenido = [
+            "pedidos" => $pedidos
+                ];
+        
+        $contenido = $this->load->view("pedidos", $parametrosContenido, TRUE);
 
-        $this->load->view("home", $parametrosVistas);
+        $this->vista($contenido);
     }
 
     public function consultar_pedido($pedido) {
-        $parametrosVistas['cabecera'] = CargaVista("cabecera");
-        $parametrosVistas['menu'] = CargaVista("menu", ["categorias" => $this->productos_model->listar_categorias(), "logueado" => $this->logueado()]);
+        $parametrosContenido = [
+            "contenido" => $this->pedidos_model->listar_productos_pedido($pedido)
+                ];
 
-        $contenidoPedido = $this->pedidos_model->listar_productos_pedido($pedido);
+        $contenido = $this->load->view("contenido_pedido", $parametrosContenido, TRUE);
 
-        $parametrosVistas['contenido'] = CargaVista("contenido_pedido", ["contenido" => $contenidoPedido]);
-
-        $this->load->view("home", $parametrosVistas);
+        $this->vista($contenido);
     }
 
     public function eliminar_producto_carrito($producto) {
@@ -150,19 +148,19 @@ class Home extends CI_Controller {
         $subtotal = 0;
         $iva = 0;
         foreach ($lineas_pedido as $l) {
-                $this->Factura->Cell(15, 7, $x++, 'BL', 0, 'C', '0');
-                $this->Factura->Cell(85, 7, $l->nombre, 'B', 0, 'C', '0');
-                $this->Factura->Cell(20, 7, $l->precio . iconv('UTF-8', 'windows-1252', " €"), 'B', 0, 'C', '0');
-                $this->Factura->Cell(20, 7, $l->cantidad, 'B', 0, 'C', '0');
-                $this->Factura->Cell(20, 7, $l->descuento . iconv('UTF-8', 'windows-1252', "%"), 'B', 0, 'C', '0');
-                $total = ($l->precio * $l->cantidad - ($l->precio * $l->cantidad * ($l->descuento / 100)));
-                $subtotal += $total;
-                $this->Factura->Cell(20, 7, round($total, 2) . iconv('UTF-8', 'windows-1252', " €"), 'BR', 0, 'C', '0');
-                $this->Factura->Ln(7);
-                
-                $iva += $total * ($l->iva / 100);
+            $this->Factura->Cell(15, 7, $x++, 'BL', 0, 'C', '0');
+            $this->Factura->Cell(85, 7, $l->nombre, 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->precio . iconv('UTF-8', 'windows-1252', " €"), 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->cantidad, 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->descuento . iconv('UTF-8', 'windows-1252', "%"), 'B', 0, 'C', '0');
+            $total = ($l->precio * $l->cantidad - ($l->precio * $l->cantidad * ($l->descuento / 100)));
+            $subtotal += $total;
+            $this->Factura->Cell(20, 7, round($total, 2) . iconv('UTF-8', 'windows-1252', " €"), 'BR', 0, 'C', '0');
+            $this->Factura->Ln(7);
+
+            $iva += $total * ($l->iva / 100);
         }
-                $this->Factura->Ln(7);
+        $this->Factura->Ln(7);
         $this->Factura->setX(155);
         $this->Factura->Cell(20, 7, "Subtotal", '', 0, 'R', '1');
         $this->Factura->Cell(20, 7, round($subtotal, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
