@@ -135,53 +135,45 @@ class Home extends CI_Controller {
         $pedido = $this->pedidos_model->listar_pedido($id_pedido);
         $lineas_pedido = $this->pedidos_model->listar_productos_pedido($id_pedido);
 
-        // Creacion del PDF
+        $this->Factura = new Factura($pedido);
+        $this->Factura->AddPage();
+        $this->Factura->AliasNbPages();
 
-        /*
-         * Se crea un objeto de la clase Pdf, recuerda que la clase Pdf
-         * heredó todos las variables y métodos de fpdf
-         */
-        $this->pdf = new Pdf();
-        // Agregamos una página
-        $this->pdf->AddPage();
-        // Define el alias para el número de página que se imprimirá en el pie
-        $this->pdf->AliasNbPages();
+        $this->Factura->SetTitle("Factura " . $pedido->id);
+        $this->Factura->SetLeftMargin(15);
+        $this->Factura->SetRightMargin(15);
+        $this->Factura->SetFillColor(200, 200, 200);
 
-        /* Se define el titulo, márgenes izquierdo, derecho y
-         * el color de relleno predeterminado
-         */
-        $this->pdf->SetTitle("Factura " . $pedido->id);
-        $this->pdf->SetLeftMargin(15);
-        $this->pdf->SetRightMargin(15);
-        $this->pdf->SetFillColor(200, 200, 200);
+        $this->Factura->SetFont('Arial', 'B', 9);
 
-        // Se define el formato de fuente: Arial, negritas, tamaño 9
-        $this->pdf->SetFont('Arial', 'B', 9);
-        /*
-         * TITULOS DE COLUMNAS
-         *
-         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
-         */
-
-        $this->pdf->Cell(15, 7, utf8_decode('Número'), 'TBL', 0, 'L', '1');
-        $this->pdf->Cell(105, 7, 'Producto', 'TB', 0, 'C', '1');
-        $this->pdf->Cell(20, 7, 'Precio', 'TB', 0, 'C', '1');
-        $this->pdf->Cell(20, 7, 'Cantidad', 'TB', 0, 'C', '1');
-        $this->pdf->Cell(20, 7, 'Total', 'TBR', 0, 'C', '1');
-        $this->pdf->Ln(7);
-        // La variable $x se utiliza para mostrar un número consecutivo
         $x = 1;
+        $subtotal = 0;
+        $iva = 0;
         foreach ($lineas_pedido as $l) {
-            // se imprime el numero actual y despues se incrementa el valor de $x en uno
-            $this->pdf->Cell(15, 7, $x++, 'BL', 0, 'C', '0');
-            // Se imprimen los datos de cada alumno
-            $this->pdf->Cell(105, 7, $l->nombre, 'B', 0, 'C', '0');
-            $this->pdf->Cell(20, 7, $l->precio, 'B', 0, 'C', '0');
-            $this->pdf->Cell(20, 7, $l->cantidad, 'B', 0, 'C', '0');
-            $this->pdf->Cell(20, 7, $l->precio * $l->cantidad, 'BR', 0, 'C', '0');
-            //Se agrega un salto de linea
-            $this->pdf->Ln(7);
+                $this->Factura->Cell(15, 7, $x++, 'BL', 0, 'C', '0');
+                $this->Factura->Cell(85, 7, $l->nombre, 'B', 0, 'C', '0');
+                $this->Factura->Cell(20, 7, $l->precio . iconv('UTF-8', 'windows-1252', " €"), 'B', 0, 'C', '0');
+                $this->Factura->Cell(20, 7, $l->cantidad, 'B', 0, 'C', '0');
+                $this->Factura->Cell(20, 7, $l->descuento . iconv('UTF-8', 'windows-1252', "%"), 'B', 0, 'C', '0');
+                $total = ($l->precio * $l->cantidad - ($l->precio * $l->cantidad * ($l->descuento / 100)));
+                $subtotal += $total;
+                $this->Factura->Cell(20, 7, round($total, 2) . iconv('UTF-8', 'windows-1252', " €"), 'BR', 0, 'C', '0');
+                $this->Factura->Ln(7);
+                
+                $iva += $total * ($l->iva / 100);
         }
+                $this->Factura->Ln(7);
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "Subtotal", '', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($subtotal, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "IVA", 'T', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($iva, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "Total", 'TB', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($subtotal + $iva, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+
+
 
         /*
          * Se manda el pdf al navegador
@@ -192,7 +184,7 @@ class Home extends CI_Controller {
          * D = Envia el pdf para descarga
          *
          */
-        $this->pdf->Output("Lista de alumnos.pdf", 'I');
+        $this->Factura->Output("Lista de alumnos.pdf", 'I');
     }
 
 }

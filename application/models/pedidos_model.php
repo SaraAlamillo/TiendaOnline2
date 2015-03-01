@@ -65,7 +65,10 @@ class Pedidos_model extends CI_Model {
             $this->db->where("pedido", $pedido);
         $resultado = $this->db->get("linea_pedido");
         foreach ($resultado->result() as &$r) {
-            $r->nombre = $this->productos_model->listar_producto($r->producto)->nombre;
+            $producto = $this->productos_model->listar_producto($r->producto);
+            $r->nombre = $producto->nombre;
+            $r->descuento = $producto->descuento;
+            $r->iva = $producto->iva;
         }
         return $resultado->result();
     } 
