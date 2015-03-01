@@ -58,7 +58,8 @@ class Home extends MY_Controller {
         
         $parametrosContenido = [
             "productos" => $carrito, 
-            "logueado" => $this->logueado()
+            "logueado" => $this->logueado(), 
+            "mensaje" => $this->session->flashdata("mensaje")
                 ];
         $contenido = $this->load->view("carrito", $parametrosContenido, TRUE);
 
@@ -96,7 +97,8 @@ class Home extends MY_Controller {
         }
         
         $parametrosContenido = [
-            "pedidos" => $pedidos
+            "pedidos" => $pedidos,
+            "mensaje" => $this->session->flashdata("mensaje")
                 ];
         
         $contenido = $this->load->view("pedidos", $parametrosContenido, TRUE);
@@ -183,6 +185,15 @@ class Home extends MY_Controller {
          *
          */
         $this->Factura->Output("Lista de alumnos.pdf", 'I');
+    }
+    
+    public function cancelar_pedido($pedido, $estado) {
+        if ($estado == 'Pendiente') {
+            $this->pedidos_model->actualizar_estado($pedido, 'Cancelado');
+        } else {
+            $this->session->set_flashdata("mensaje", "Si un pedido ya ha sido procesado, no se puede cancelar.");
+        }
+        $this->consultar_pedidos();
     }
 
 }

@@ -28,7 +28,7 @@ class Pedidos_model extends CI_Model {
             'dni' => $datosUsuario->dni
         ];
         $this->db->insert("pedido", $datos);
-        
+
         return $this->ultimo_pedido($usuario);
     }
 
@@ -55,14 +55,13 @@ class Pedidos_model extends CI_Model {
     }
 
     public function listar_pedido($pedido) {
-            $this->db->where("id", $pedido);
+        $this->db->where("id", $pedido);
         $resultado = $this->db->get("pedido");
         return $resultado->row();
     }
-    
-   
+
     public function listar_productos_pedido($pedido) {
-            $this->db->where("pedido", $pedido);
+        $this->db->where("pedido", $pedido);
         $resultado = $this->db->get("linea_pedido");
         foreach ($resultado->result() as &$r) {
             $producto = $this->productos_model->listar_producto($r->producto);
@@ -71,8 +70,8 @@ class Pedidos_model extends CI_Model {
             $r->iva = $producto->iva;
         }
         return $resultado->result();
-    } 
-    
+    }
+
     public function total_pedido($pedido) {
         $this->db->select("precio, cantidad");
         $this->db->where("pedido", $pedido);
@@ -82,6 +81,12 @@ class Pedidos_model extends CI_Model {
             $total += ($r->precio * $r->cantidad);
         }
         return $total;
+    }
+
+    public function actualizar_estado($pedido, $estado) {
+        $this->db->where("id", $pedido);
+        $this->db->set("estado", $estado);
+        $this->db->update("pedido");
     }
 
 }
