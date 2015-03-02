@@ -7,7 +7,6 @@ class Home extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->library("carrito", ["session" => $this->session]);
     }
     
     
@@ -79,13 +78,6 @@ class Home extends MY_Controller {
 
     public function cerrar_sesion() {
         $this->session->unset_userdata('usuario');
-        redirect(site_url());
-    }
-
-    public function tramitar_compra() {
-        $pedido = $this->pedidos_model->crear_pedido($this->session->userdata('usuario'));
-        $this->pedidos_model->agregar_productos($pedido, $this->carrito->get_contenido());
-        $this->carrito->vaciar_carrito();
         redirect(site_url());
     }
 

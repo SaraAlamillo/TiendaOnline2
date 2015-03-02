@@ -1,4 +1,7 @@
 <div id="carrito">
+    <?php if (!is_null($mensaje)): ?>
+    <p><?=$mensaje ?></p>
+    <?php endif; ?>
     <table border="1">
 	<tr>
 	    <td>Producto</td>
@@ -18,7 +21,7 @@
     </table>
     <br />
     <?php if ($logueado): ?>
-    <button><?= anchor("home/tramitar_compra", "Comprar productos") ?></button>
+    <button><?= anchor("compra/confirmar_productos", "Comprar productos") ?></button>
     <button><?= anchor("home/vaciar_carrito", "Vaciar carrito") ?></button>
     
     <?php else: ?>

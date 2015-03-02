@@ -18,6 +18,13 @@ class Usuarios_model extends CI_Model {
         $resultado = $this->db->get("provincia");
         return $resultado->result();
     }
+    
+    public function nombre_provincia($id) {
+        $this->db->select("nombre");
+        $this->db->where("id", $id);
+        $resultado = $this->db->get("provincia");
+        return $resultado->row()->nombre;
+    }
 
     /**
      * Devuelve si un usuario está recogido en la base de datos. Se puede buscar por su nombre o su nombre y contraseña.
