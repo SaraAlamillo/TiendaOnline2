@@ -15,20 +15,20 @@ class Productos_model extends CI_Model {
      * @return object Listado de todos los datos de las categorías.
      */
     public function listar_categorias() {
-	$resultado = $this->db->get("categoria");
-	return $resultado->result();
+        $resultado = $this->db->get("categoria");
+        return $resultado->result();
     }
 
     public function listar_categoria($id) {
-	$this->db->where("id", $id);
-	$resultado = $this->db->get("categoria");
-	return $resultado->row();
+        $this->db->where("id", $id);
+        $resultado = $this->db->get("categoria");
+        return $resultado->row();
     }
 
     public function listar_producto($id) {
-	$this->db->where("id", $id);
-	$resultado = $this->db->get("producto");
-	return $resultado->row();
+        $this->db->where("id", $id);
+        $resultado = $this->db->get("producto");
+        return $resultado->row();
     }
 
     /**
@@ -36,25 +36,23 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos.
      * @return object Listado de todos los datos de los productos.
      */
-    public function listar_productos($categoria = NULL, $paginacion = NULL) {
-	if (!is_null($categoria)) {
-	    $this->db->where("categoria", $categoria);
-	}
-	if (is_null($paginacion)) {
-	    $resultado = $this->db->get("producto");
-	} else {
-	    $resultado = $this->db->get("producto", $paginacion["total"], $paginacion["inicio"]);
-	}
-	return $resultado->result();
+    public function listar_productos($categoria = NULL, $pagina = 0) {
+        if (!is_null($categoria)) {
+            $this->db->where("categoria", $categoria);
+        }
+
+        $resultado = $this->db->get("producto", Home::maxPorPagina, $pagina);
+
+        return $resultado->result();
     }
 
     public function num_total_productos($categoria = NULL) {
-	if (!is_null($categoria)) {
-	    $this->db->where("categoria", $categoria);
-	}
+        if (!is_null($categoria)) {
+            $this->db->where("categoria", $categoria);
+        }
 
-	$resultado = $this->db->get("producto");
-	return $resultado->num_rows();
+        $resultado = $this->db->get("producto");
+        return $resultado->num_rows();
     }
 
     /**
@@ -62,31 +60,30 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos destacados.
      * @return object Listado de todos los datos de los productos destacados.
      */
-    public function listar_destacados($categoria = NULL, $paginacion = NULL) {
-        if (!is_null($paginacion)) {
-            $this->db->limit($paginacion["total"], $paginacion["inicio"]);
+    public function listar_destacados($categoria = NULL, $pagina = 0) {
+            $this->db->limit(Home::maxPorPagina, $pagina);
+        
+        $intervalo = [
+            "fecha_inicio <" => date("Y-m-d H:i:s"),
+            "fecha_fin >" => date("Y-m-d H:i:s")
+        ];
+        $this->db->from('producto');
+        $this->db->join('destacado', 'producto.id = destacado.producto');
+        $this->db->where($intervalo);
+        if (!is_null($categoria)) {
+            $this->db->where("producto.categoria", $categoria);
         }
-	$intervalo = [
-	    "fecha_inicio <" => date("Y-m-d H:i:s"),
-	    "fecha_fin >" => date("Y-m-d H:i:s")
-	];
-	$this->db->from('producto');
-	$this->db->join('destacado', 'producto.id = destacado.producto');
-	$this->db->where($intervalo);
-	if (!is_null($categoria)) {
-	    $this->db->where("producto.categoria", $categoria);
-	}
-	$resultado = $this->db->get();
-	return $resultado->result();
+        $resultado = $this->db->get();
+        return $resultado->result();
     }
-    
-    public function num_total_destacados($categoria = NULL) {
-	if (!is_null($categoria)) {
-	    $this->db->where("categoria", $categoria);
-	}
 
-	$resultado = $this->db->get("destacado");
-	return $resultado->num_rows();
+    public function num_total_destacados($categoria = NULL) {
+        if (!is_null($categoria)) {
+            $this->db->where("categoria", $categoria);
+        }
+
+        $resultado = $this->db->get("destacado");
+        return $resultado->num_rows();
     }
 
     /**
@@ -95,10 +92,10 @@ class Productos_model extends CI_Model {
      * @return integer Número de elementos que hay del producto
      */
     public function obtener_stock($id) {
-	$this->db->select("stock");
-	$this->db->where("id", $id);
-	$resultado = $this->db->get("producto");
-	return $resultado->row()->stock;
+        $this->db->select("stock");
+        $this->db->where("id", $id);
+        $resultado = $this->db->get("producto");
+        return $resultado->row()->stock;
     }
 
     /**
@@ -109,22 +106,22 @@ class Productos_model extends CI_Model {
      * @return boolean Devuelve el resultado de la operación: TRUE si ha ido todo correcto y FALSE en caso contrario
      */
     public function modificar_stock($id, $operacion, $cantidad) {
-	if ($operacion == "+") {
-	    $nuevoStock = $this->obtener_stock($id) + $cantidad;
-	} elseif ($operacion == "-") {
-	    $nuevoStock = $this->obtener_stock($id) - $cantidad;
-	} else {
-	    return FALSE;
-	}
+        if ($operacion == "+") {
+            $nuevoStock = $this->obtener_stock($id) + $cantidad;
+        } elseif ($operacion == "-") {
+            $nuevoStock = $this->obtener_stock($id) - $cantidad;
+        } else {
+            return FALSE;
+        }
 
-	$this->db->where("id", $id);
-	$this->db->update("producto", ["stock" => $nuevoStock]);
+        $this->db->where("id", $id);
+        $this->db->update("producto", ["stock" => $nuevoStock]);
 
-	if ($this->obtener_stock($id) == $nuevoStock) {
-	    return TRUE;
-	} else {
-	    return FALSE;
-	}
+        if ($this->obtener_stock($id) == $nuevoStock) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 }

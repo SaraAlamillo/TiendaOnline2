@@ -4,17 +4,29 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Home extends MY_Controller {
+    
+    const maxPorPagina = 2;
 
     public function __construct() {
         parent::__construct();
     }
     
-    
+    public function paginar($pagina, $url, $total, $segmento = 4) {
+        $config['base_url'] = $url;
+        $config['per_page'] = self::maxPorPagina;
+        $config['total_rows'] = $total;
+        $config['uri_segment'] = $segmento;
+        
+        $this->pagination->initialize($config);
+        
+        return $this->pagination->create_links();
+    }
 
-    public function index() {
+    public function index($pagina = 0) {
         $parametrosContenido = [
-            "productos" => $this->productos_model->listar_destacados(),
-            "error" => $this->session->flashdata("mensaje")
+            "productos" => $this->productos_model->listar_destacados(NULL, $pagina),
+            "error" => $this->session->flashdata("mensaje"),
+            "paginador" => $this->paginar($pagina, site_url("home/index/"), $this->productos_model->num_total_destacados())
         ];
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
         
@@ -22,10 +34,11 @@ class Home extends MY_Controller {
 
     }
 
-    public function ver_categoria($categoria = NULL) {
+    public function ver_categoria($categoria = NULL, $pagina = 0) {
         $parametrosContenido = [
-            "productos" => $this->productos_model->listar_productos($categoria),
-            "error" => $this->session->flashdata("mensaje")
+            "productos" => $this->productos_model->listar_productos($categoria, $pagina),
+            "error" => $this->session->flashdata("mensaje"),
+            "paginador" => $this->paginar($pagina, site_url("home/ver_categoria/" . $categoria . "/"), $this->productos_model->num_total_productos($categoria))
         ];
 
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);

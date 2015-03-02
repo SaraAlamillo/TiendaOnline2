@@ -3,4 +3,5 @@
 	?>
 	<?= generarVistaProducto($p, $error) ?>
     <?php endforeach; ?>
+    <?= $paginador ?>
 </div>
