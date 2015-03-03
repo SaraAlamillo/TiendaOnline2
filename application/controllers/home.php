@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-require_once __DIR__ . '\sara.php';
+require_once __DIR__ . '/sara.php';
 
 class Home extends Sara {
     
@@ -13,7 +13,7 @@ class Home extends Sara {
         parent::__construct();
     }
     
-    public function paginar($pagina, $url, $total, $segmento = 4) {
+    public function paginar($url, $total, $segmento = 4) {
         $config['base_url'] = $url;
         $config['per_page'] = self::maxPorPagina;
         $config['total_rows'] = $total;
