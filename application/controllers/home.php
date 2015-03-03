@@ -3,7 +3,9 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Home extends MY_Controller {
+require_once __DIR__ . '\sara.php';
+
+class Home extends Sara {
     
     const maxPorPagina = 2;
 

@@ -3,7 +3,9 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Usuarios extends MY_Controller {
+require_once __DIR__ . 'sara.php';
+
+class Usuarios extends Sara {
 
     public function __construct() {
         parent::__construct();
