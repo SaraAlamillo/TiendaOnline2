@@ -28,7 +28,7 @@ class Home extends Sara {
         $parametrosContenido = [
             "productos" => $this->productos_model->listar_destacados(NULL, $pagina),
             "error" => $this->session->flashdata("mensaje"),
-            "paginador" => $this->paginar($pagina, site_url("home/index/"), $this->productos_model->num_total_destacados())
+            "paginador" => $this->paginar(site_url("home/index/"), $this->productos_model->num_total_destacados())
         ];
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
 
@@ -39,7 +39,7 @@ class Home extends Sara {
         $parametrosContenido = [
             "productos" => $this->productos_model->listar_productos($categoria, $pagina),
             "error" => $this->session->flashdata("mensaje"),
-            "paginador" => $this->paginar($pagina, site_url("home/ver_categoria/" . $categoria . "/"), $this->productos_model->num_total_productos($categoria))
+            "paginador" => $this->paginar(site_url("home/ver_categoria/" . $categoria . "/"), $this->productos_model->num_total_productos($categoria))
         ];
 
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
