@@ -11,7 +11,6 @@ class Compra extends Sara {
         parent::__construct();
     }
 
-
     function confirmar_productos() {
         $carrito = $this->carrito->get_contenido();
 
@@ -57,11 +56,34 @@ class Compra extends Sara {
         $contenido = $this->load->view("realizar_compra/mensaje_final", '', TRUE);
         $this->vista($contenido);
     }
+
     function email_detalle() {
         
     }
-    function email_pdf() {
+
+    function email_pdf($pedido) {
+        $factura = $this->factura->generar($pedido, TRUE);
+        $email = $this->usuarios_model->listar_usuario($this->session->userdata('usuario'))->email;
+
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'mail.iessansebastian.com';
+        $config['smtp_user'] = 'aula4@iessansebastian.com';
+        $config['smtp_pass'] = 'daw2alumno';
+        $config['mailtype'] = 'html';
+
+        $this->email->initialize($config);
+
+        $this->email->from('pedidos@tiendaonline.com', 'Departamento de pedidos');
+        $this->email->to($email);
+
+        $this->email->subject('Factura del pedido ' . $pedido);
+        $this->email->message('<html><body><p>Adjunto a este correo electrónico podrá encontrar la factura del pedido ' . $pedido . '</body></html>');
+        $this->email->attach($factura);
+        $this->email->send();
         
+        unlink($factura);
+        
+        redirect(site_url("compra/mensaje_final"));
     }
 
 }

@@ -17,9 +17,9 @@
                 <td><?= $p->fecha_pedido ?></td>
                 <td><?= $p->fecha_entrega ?></td>
                 <td><?= $p->total ?></td>
-                <td><?= anchor("home/consultar_pedido/$p->id", "Más detalles") ?></td>            
-                <td><?= anchor("home/generar_factura/$p->id", "Generar factura") ?></td>     
-                <?php if ($p->estado != 'Cancelado'): ?>
+                <td><?= anchor("home/consultar_pedido/$p->id", "Más detalles") ?></td>        
+                <?php if ($p->estado != 'Cancelado'): ?>     
+                <td><?= anchor("home/generar_factura/$p->id", "Generar factura") ?></td>    
                 <td><?= anchor("home/cancelar_pedido/$p->id/$p->estado", "Cancelar pedido") ?></td>
                 <?php endif; ?>
 

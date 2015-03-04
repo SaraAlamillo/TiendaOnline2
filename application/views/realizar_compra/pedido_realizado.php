@@ -3,6 +3,6 @@
     <br />
     <button><?= anchor("compra/mensaje_final", "No deseo recibir nada") ?></button>
     <button><?= anchor("compra/email_detalle", "Deseo que me envíen los detalles") ?></button>
-    <button><?= anchor("compra/email_pdf", "Deseo que me envíen los detalles en PDF") ?></button>
+    <button><?= anchor("compra/email_pdf/$pedido", "Deseo que me envíen los detalles en PDF") ?></button>
 </div>
 

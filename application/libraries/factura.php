@@ -69,5 +69,60 @@ class Factura extends FPDF {
         $this->Cell(20, 7, 'Total', 'TBR', 0, 'C', '1');
         $this->Ln(7);
     }
+    
+    public function generar($id_pedido, $para_email = FALSE) {
+        ob_clean();
+        
+        $CI =& get_instance();
+        
+        $pedido = $CI->pedidos_model->listar_pedido($id_pedido);
+        $lineas_pedido = $CI->pedidos_model->listar_productos_pedido($id_pedido);
+
+        $this->Factura = new Factura($pedido);
+        $this->Factura->AddPage();
+        $this->Factura->AliasNbPages();
+
+        $this->Factura->SetTitle("Factura " . $pedido->id);
+        $this->Factura->SetLeftMargin(15);
+        $this->Factura->SetRightMargin(15);
+        $this->Factura->SetFillColor(200, 200, 200);
+
+        $this->Factura->SetFont('Arial', 'B', 9);
+
+        $x = 1;
+        $subtotal = 0;
+        $iva = 0;
+        foreach ($lineas_pedido as $l) {
+            $this->Factura->Cell(15, 7, $x++, 'BL', 0, 'C', '0');
+            $this->Factura->Cell(85, 7, $l->nombre, 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->precio . iconv('UTF-8', 'windows-1252', " €"), 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->cantidad, 'B', 0, 'C', '0');
+            $this->Factura->Cell(20, 7, $l->descuento . iconv('UTF-8', 'windows-1252', "%"), 'B', 0, 'C', '0');
+            $total = ($l->precio * $l->cantidad - ($l->precio * $l->cantidad * ($l->descuento / 100)));
+            $subtotal += $total;
+            $this->Factura->Cell(20, 7, round($total, 2) . iconv('UTF-8', 'windows-1252', " €"), 'BR', 0, 'C', '0');
+            $this->Factura->Ln(7);
+
+            $iva += $total * ($l->iva / 100);
+        }
+        $this->Factura->Ln(7);
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "Subtotal", '', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($subtotal, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "IVA", 'T', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($iva, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+        $this->Factura->setX(155);
+        $this->Factura->Cell(20, 7, "Total", 'TB', 0, 'R', '1');
+        $this->Factura->Cell(20, 7, round($subtotal + $iva, 2) . iconv('UTF-8', 'windows-1252', " €"), 'B', 1, 'C', '0');
+
+        if ($para_email) {
+            $fichero = APPPATH . "/tmp/" . "Factura " . $pedido->id . ".pdf";
+            $this->Factura->Output($fichero, 'F');
+            return $fichero;
+        } else {
+            $this->Factura->Output("Factura " . $pedido->id, 'I');
+        }
+    }
 
 }
