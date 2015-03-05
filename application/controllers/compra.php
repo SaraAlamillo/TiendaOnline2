@@ -57,14 +57,24 @@ class Compra extends Sara {
         $this->vista($contenido);
     }
 
-    function email_detalle() {
+    function enviar_detalle() {
         
     }
 
-    function email_pdf($pedido) {
+    function enviar_pdf($pedido) {
         $factura = $this->factura->generar($pedido, TRUE);
         $email = $this->usuarios_model->listar_usuario($this->session->userdata('usuario'))->email;
 
+        $mensaje = '<html><body><p>Adjunto a este correo electrónico podrá encontrar la factura del pedido ' . $pedido . '</body></html>';
+
+        $this->email($pedido, $email, $mensaje, $factura);
+
+        unlink($factura);
+        
+        redirect(site_url("compra/mensaje_final"));
+    }
+
+    function email($pedido, $destinatario, $mensaje, $adjunto = NULL) {
         $config['protocol'] = 'smtp';
         $config['smtp_host'] = 'mail.iessansebastian.com';
         $config['smtp_user'] = 'aula4@iessansebastian.com';
@@ -74,16 +84,17 @@ class Compra extends Sara {
         $this->email->initialize($config);
 
         $this->email->from('pedidos@tiendaonline.com', 'Departamento de pedidos');
-        $this->email->to($email);
+        $this->email->to($destinatario);
 
-        $this->email->subject('Factura del pedido ' . $pedido);
-        $this->email->message('<html><body><p>Adjunto a este correo electrónico podrá encontrar la factura del pedido ' . $pedido . '</body></html>');
-        $this->email->attach($factura);
-        $this->email->send();
+        $this->email->subject('Pedido ' . $pedido);
         
-        unlink($factura);
+        $this->email->message($mensaje);
         
-        redirect(site_url("compra/mensaje_final"));
+        if (!is_null($adjunto)) {
+            $this->email->attach($adjunto);
+        }
+
+        return $this->email->send();
     }
 
 }

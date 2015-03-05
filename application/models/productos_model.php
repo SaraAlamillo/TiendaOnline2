@@ -3,6 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+require_once APPPATH . 'controllers/home.php';
 /**
  * Description of modelo
  *
@@ -36,12 +37,16 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos.
      * @return object Listado de todos los datos de los productos.
      */
-    public function listar_productos($categoria = NULL, $pagina = 0) {
+    public function listar_productos($categoria = NULL, $pagina = 0, $paginacion = NULL) {
         if (!is_null($categoria)) {
             $this->db->where("categoria", $categoria);
         }
-
+        if (is_null($paginacion)) {
+        $resultado = $this->db->get("producto");
+            
+        } else {
         $resultado = $this->db->get("producto", Home::maxPorPagina, $pagina);
+        }
 
         return $resultado->result();
     }

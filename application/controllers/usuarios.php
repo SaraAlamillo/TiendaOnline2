@@ -9,8 +9,6 @@ class Usuarios extends Sara {
 
     public function __construct() {
         parent::__construct();
-        $this->load->helper('form');
-        $this->load->library('form_validation');
         $this->form_validation->set_message('required', 'El campo %s no puede estar vacío');
         $this->form_validation->set_message('valid_email', 'El campo %s debe tener una dirección válida');
 
@@ -44,6 +42,7 @@ class Usuarios extends Sara {
         ];
 
         $contenido = $this->load->view("registro", $parametrosContenido, TRUE);
+        
 
         $this->vista($contenido);
     }
