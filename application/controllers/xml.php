@@ -12,9 +12,11 @@ class Xml extends Sara {
     }
 
     public function exportar() {
+        $this->load->helper('download');
+        
+        $categorias = $this->productos_model->listar_categorias();
 
-
-        $xml = "<?xml version=\"1.0\" ?>\n"
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 . "<categorias>\n";
         foreach ($categorias as $c) {
             $xml .= "<categoria>\n"
@@ -26,7 +28,9 @@ class Xml extends Sara {
                 foreach ($productos as $p) {
                     $xml .= "<producto>\n";
                     foreach ($p as $key => $value) {
-                        $xml .= "<$key>$value</$key>\n";
+                        if ($key != 'descripcion') {
+                            $xml .= "<$key>$value</$key>\n";
+                        }
                     }
                     $xml .= "</producto>\n";
                 }
@@ -38,32 +42,32 @@ class Xml extends Sara {
         }
         $xml .= "</categorias>";
 
-        $nombre_fichero = "datos_tienda_" . date("dmY") . ".xml";
-        $ruta = APPPATH . "/tmp/";
-
-        file_put_contents( $ruta . $nombre_fichero, $xml);
-
-        header('Content-Type: application/x-download');
-        header('Content-Disposition: attachment; filename="' . $nombre_fichero . '"');
-        header('Cache-Control: private, max-age=0, must-revalidate');
-        header('Pragma: public');
+        $nombre_fichero = "datos_tienda_" . time() . ".xml";
         
-        
-        unlink($ruta . $nombre_fichero);
-
+        force_download($nombre_fichero, $xml);
     }
 
-    public function importar() {
-        
-    }
-
-    public function ruta_check($input) {
-        if (file_exists($input)) {
-            return TRUE;
+    public function subir_fichero() {
+        $config['upload_path'] = APPPATH . "tmp/";
+        $config['allowed_types'] = 'xml';
+        $this->load->library('upload', $config);
+        $parametros = [];
+        if ($this->upload->do_upload()) {
+            $fichero = $this->upload->data()["file_name"];
+            $this->importar($fichero);
+            exit();
         } else {
-            $this->form_validation->set_message('ruta_check', 'No existe la ruta proporcionada.');
-            return FALSE;
+            $parametros['error'] = $this->upload->display_errors();
         }
+        $this->load->view('importar_xml', $parametros);
+    }
+
+    public function importar($fichero) {
+        echo $fichero;
+        $categorias = simplexml_load_file(APPPATH . "tmp/" . $fichero);
+        echo "<pre>";
+        print_r($categorias);
+        echo "</pre>";
     }
 
 }
