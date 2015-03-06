@@ -1,27 +1,283 @@
-html, body {
-    height: 90%;
-    margin: 0;
-    padding: 0;}
-#menu {
+*
+{
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body
+{
+    background: #ffffff;
+}
+
+#titulo
+{
     float: left;
-    width: 25%;
-    background-color:#ccc;
+
+    color: #ffffff;
+    font-size: 2.5em;
+    margin: 20px auto;
+    cursor: default;
+
 }
-#contenido {
-    float: left;    
-    width: 75%;
-    background-color:antiquewhite;
-}
-#cabecera {
-    height: 20%;
+.cabecera2
+{
+    height: 10%;
     width: 100%;
-    float:none;
-    background-color:#FBE6F2;
+    float: right;
+    background: #4285f4;
+    -webkit-box-shadow:-6px 0#4285f4, 0px 8px 5px 0px rgba(50, 50, 50, 0.59);
+    -moz-box-shadow:   -6px 0#4285f4, 0px 8px 5px 0px rgba(50, 50, 50, 0.59);
+    box-shadow:       -6px 0#4285f4,  0px 8px 5px 0px rgba(50, 50, 50, 0.59);
+    position: relative;
 }
-#producto {
-    display: block;
+.controles-cabecera{
+    margin: 20px;
+    float: right;
+    color: #ffffff;
 }
-#producto img {
-    height: 100px;
+.controles-cabecera a:visited
+{
+    color: #ffffff;
+}
+#principal
+{
+    height: 80%;
+}
+
+#menu-lateral
+{
     float: left;
+    width:12%;
+    height: 100%;
+    margin-left: 0;
+}
+
+#contenido
+{
+    float: right;
+    width: 85%;
+    margin-top: 20px;
+}
+
+#footer
+{
+    clear: both;
+}
+.footer1
+{
+    height: 10%;
+    width: 12%;
+    float: left;
+    background: #4285f4;
+    -webkit-box-shadow: 0px -8px 5px 0px rgba(50, 50, 50, 0.33);
+    -moz-box-shadow:    0px -8px 5px 0px rgba(50, 50, 50, 0.33);
+    box-shadow:         0px -8px 5px 0px rgba(50, 50, 50, 0.33);
+    position: relative;
+}
+.footer2
+{
+    height: 10%;
+    width: 88%;
+    float: right;
+    background: #4285f4;
+    -webkit-box-shadow:-6px 0#4285f4, 0px -8px 5px 0px rgba(50, 50, 50, 0.59);
+    -moz-box-shadow:   -6px 0#4285f4, 0px -8px 5px 0px rgba(50, 50, 50, 0.59);
+    box-shadow:       -6px 0#4285f4,  0px -8px 5px 0px rgba(50, 50, 50, 0.59);
+    position: relative;
+}
+label
+{
+    display: inline-block;
+    width  : 115px;
+    text-align: right;
+}
+label textarea
+{
+    vertical-align: middle;
+}
+
+form
+{
+    background: #ffb73a;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 8px 16px 0;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 8px 16px 0;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0 8px 16px 0;
+    max-width: 800px;
+    padding: 20px;
+}
+form div
+{
+    margin: 1em;
+}
+.icono
+{
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+input,textarea,select
+{
+    background: #ececec;
+    cursor: pointer;
+    border-radius: .25em;
+}
+label
+{
+    cursor: pointer;
+}
+.lista, .lista-cabecera
+{
+    padding: 0 10px 0 10px;
+    float: left;
+    position: relative;
+    width: 96%;
+    height: 35px;
+    background: #4285f4;
+    color: #ffffff;
+
+    box-shadow: rgba(0, 0, 0, 0.2) 0 16px 16px 0;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 16px 16px 0;
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 16px 16px 0;
+    transition: background .3s ease;
+    margin: 15px 0 0 0;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+    line-height: 36px;
+    text-align: center;
+}
+.lista .iconos
+{
+    float: right;
+}
+.lista-cabecera
+{
+    background: #1972f4;
+}
+.lista:hover
+{
+    background: #1972f4;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 16px 16px 0;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 16px 16px 0;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0 16px 16px 0;
+
+}
+.datos
+{
+    float: left;
+    width: 16%;
+}
+.boton-mas
+{
+    clear: both;
+    width: 3em;
+    height: 3em;
+    background: #4285f4;
+    margin-top: 20px;
+    border-radius: 200px 200px 200px 200px;
+    -moz-border-radius: 200px 200px 200px 200px;
+    -webkit-border-radius: 200px 200px 200px 200px;
+    text-align: center;
+    line-height: 3em;
+    float: left;
+    -webkit-box-shadow: 4px 4px 5px 0px rgba(50, 50, 50, 0.59);
+    -moz-box-shadow:    4px 4px 5px 0px rgba(50, 50, 50, 0.59);
+    box-shadow:         4px 4px 5px 0px rgba(50, 50, 50, 0.59);
+    cursor: pointer;
+    position: relative;
+}
+.boton-mas a
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    color: #ffffff;
+    font-size: 1.5em;
+}
+.boton-mas:hover
+{
+    background: #1972f4;
+    -webkit-box-shadow: 6px 6px 5px 0px rgba(50, 50, 50, 0.67);
+    -moz-box-shadow:    6px 6px 5px 0px rgba(50, 50, 50, 0.67);
+    box-shadow:         6px 6px 5px 0px rgba(50, 50, 50, 0.67);
+}
+.paginacion
+{
+    margin: 0 auto;
+    text-align: center;
+}
+.paginacion a:hover
+{
+    background: #50c1d3;
+}
+
+.accordion-toggle,.accordion-content
+{
+    cursor: pointer;
+}
+.accordion-content {
+    display: none;
+    height: 100px;
+    margin-top: -35px;
+   background: #1972f4;
+   }
+.accordion-content.default {display: block;}
+
+.accordion-content .iconos,.accordion-toggle .iconos
+{
+    width: 130px;
+    float: right;
+}
+
+* {margin: 0; padding: 0;}
+
+ul {
+    background: #ffffff;
+    width: 100%;
+    height: 100%;
+    box-shadow: rgba(0, 0, 0, 0.5)  8px 8px 14px 0px ;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5)  8px 8px 14px 0px ;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5)  8px 8px 14px 0px ;
+
+}
+
+ul li {
+    list-style-type: circle;
+    /*relative positioning for list items along with overflow hidden to contain the overflowing ripple*/
+    position: relative;
+    overflow: hidden;
+}
+li:hover
+{
+    -webkit-box-shadow: 6px 0px 29px 0px rgba(57, 50, 50, 0.75);
+    -moz-box-shadow:    6px 0px 29px 0px rgba(57, 50, 50, 0.75);
+    box-shadow:         6px 0px 29px 0px rgba(57, 50, 50, 0.75);
+}
+ul li a {
+    color: #283593;
+    font: normal 14px/28px Montserrat;
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    /*static positioned elements appear behind absolutely positioned siblings(.ink in this case) hence we will make the links relatively positioned to bring them above .ink*/
+    position: relative;
+}
+
+/*.ink styles - the elements which will create the ripple effect. The size and position of these elements will be set by the JS code. Initially these elements will be scaled down to 0% and later animated to large fading circles on user click.*/
+.ink {
+    display: block; position: absolute;
+    background: hsl(180, 40%, 80%);
+    border-radius: 100%;
+    transform: scale(0);
+}
+/*animation effect*/
+.ink.animate {animation: ripple 0.65s linear;}
+@keyframes ripple {
+    /*scale the element to 250% to safely cover the entire link and fade it out*/
+    100% {opacity: 0; transform: scale(2.5);}
 }
