@@ -135,16 +135,18 @@ class Productos_model extends CI_Model {
         foreach ($datos as $key => $value) {
             if ($key == "codigo" || $key == "nombre" || $key == "descripcion" || $key == "anuncio") {
                 $value = "'$value'";
-            } elseif ($key != "productos") {
-                array_push($claves, $key);
-                array_push($valores, $value);
             }
+            array_push($claves, $key);
+            array_push($valores, $value);
         }
         $claves = implode(", ", $claves);
         $valores = implode(", ", $valores);
-        echo $claves . "<br />";
-        echo $valores . "<br />";
-        //$this->db->query("insert into categoria ($claves) values ($valores)");
+
+        $this->db->query("insert into categoria ($claves) values ($valores)");
+
+        $this->db->select_max('id');
+        $resultado = $this->db->get("categoria");
+        return $resultado->row()->id;
     }
 
     public function insertar_productos($datos) {

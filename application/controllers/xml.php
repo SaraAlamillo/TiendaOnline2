@@ -19,9 +19,10 @@ class Xml extends Sara {
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 . "<categorias>\n";
         foreach ($categorias as $c) {
-            $xml .= "<categoria>\n"
-                    . "<id>{$c->id}</id>\n"
-                    . "<nombre>{$c->nombre}</nombre>\n";
+            $xml .= "<categoria>\n";
+            foreach ($c as $key => $value) {
+                $xml .= "<$key>$value</$key>\n";
+            }
             $productos = $this->productos_model->listar_productos($c->id);
             if (count($productos) != 0) {
                 $xml .= "<productos>\n";
@@ -64,24 +65,29 @@ class Xml extends Sara {
     }
 
     public function importar($fichero, $ruta) {
-        $categorias = simplexml_load_file($ruta . $fichero);
-        echo "<pre>";
-        print_r($categorias);
-        echo "</pre>";
-        /*foreach ($categorias as $c) {
-            $this->productos_model->insertar_categoria($c);
-            /* foreach ($c->productos->producto as $p) {
-              unset($p->id);
+        $categorias = json_decode(json_encode((array) simplexml_load_file($ruta . $fichero)), 1);
 
-              $p->descripcion = utf8_decode($p->descripcion);
+        foreach ($categorias['categoria'] as &$c) {
+            $productos = $c['productos'];
+            unset($c['productos']);
+            unset($c['id']);
+            $categoria = $this->productos_model->insertar_categoria($c);
+            if (!empty($productos)) {
+                foreach ($productos['producto'] as &$p) {
+                    unset($p['id']);
+                    if (empty($p['anuncio'])) {
+                        $p['anuncio'] = "";
+                    }
+                    $p['nombre'] = utf8_decode($p['nombre']);
+                    $p['descripcion'] = utf8_decode($p['descripcion']);
 
-              $p->categoria = $c->id;
+                    $p['categoria'] = $categoria;
 
-              $this->productos_model->insertar_productos($p);
-              } */
-        //}
+                    $this->productos_model->insertar_productos($p);
+                }
+            }
+        }
         unlink($ruta . $fichero);
-        echo "lista";
     }
 
 }
