@@ -13,7 +13,7 @@ class Xml extends Sara {
 
     public function exportar() {
         $this->load->helper('download');
-        
+
         $categorias = $this->productos_model->listar_categorias();
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -28,9 +28,9 @@ class Xml extends Sara {
                 foreach ($productos as $p) {
                     $xml .= "<producto>\n";
                     foreach ($p as $key => $value) {
-                        if ($key != 'descripcion') {
-                            $xml .= "<$key>$value</$key>\n";
-                        }
+                        $value = str_replace("<", "&lt;", $value);
+                        $value = str_replace(">", "&gt;", $value);
+                        $xml .= "<$key>$value</$key>\n";
                     }
                     $xml .= "</producto>\n";
                 }
@@ -43,18 +43,19 @@ class Xml extends Sara {
         $xml .= "</categorias>";
 
         $nombre_fichero = "datos_tienda_" . time() . ".xml";
-        
+
         force_download($nombre_fichero, $xml);
     }
 
     public function subir_fichero() {
-        $config['upload_path'] = APPPATH . "tmp/";
+        $ruta = APPPATH . "tmp/";
+        $config['upload_path'] = $ruta;
         $config['allowed_types'] = 'xml';
         $this->load->library('upload', $config);
         $parametros = [];
         if ($this->upload->do_upload()) {
             $fichero = $this->upload->data()["file_name"];
-            $this->importar($fichero);
+            $this->importar($fichero, $ruta);
             exit();
         } else {
             $parametros['error'] = $this->upload->display_errors();
@@ -62,12 +63,25 @@ class Xml extends Sara {
         $this->load->view('importar_xml', $parametros);
     }
 
-    public function importar($fichero) {
-        echo $fichero;
-        $categorias = simplexml_load_file(APPPATH . "tmp/" . $fichero);
+    public function importar($fichero, $ruta) {
+        $categorias = simplexml_load_file($ruta . $fichero);
         echo "<pre>";
         print_r($categorias);
         echo "</pre>";
+        /*foreach ($categorias as $c) {
+            $this->productos_model->insertar_categoria($c);
+            /* foreach ($c->productos->producto as $p) {
+              unset($p->id);
+
+              $p->descripcion = utf8_decode($p->descripcion);
+
+              $p->categoria = $c->id;
+
+              $this->productos_model->insertar_productos($p);
+              } */
+        //}
+        unlink($ruta . $fichero);
+        echo "lista";
     }
 
 }

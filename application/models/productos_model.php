@@ -4,6 +4,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 require_once APPPATH . 'controllers/home.php';
+
 /**
  * Description of modelo
  *
@@ -42,10 +43,9 @@ class Productos_model extends CI_Model {
             $this->db->where("categoria", $categoria);
         }
         if (is_null($paginacion)) {
-        $resultado = $this->db->get("producto");
-            
+            $resultado = $this->db->get("producto");
         } else {
-        $resultado = $this->db->get("producto", Home::maxPorPagina, $pagina);
+            $resultado = $this->db->get("producto", Home::maxPorPagina, $pagina);
         }
 
         return $resultado->result();
@@ -66,8 +66,8 @@ class Productos_model extends CI_Model {
      * @return object Listado de todos los datos de los productos destacados.
      */
     public function listar_destacados($categoria = NULL, $pagina = 0) {
-            $this->db->limit(Home::maxPorPagina, $pagina);
-        
+        $this->db->limit(Home::maxPorPagina, $pagina);
+
         $intervalo = [
             "fecha_inicio <" => date("Y-m-d H:i:s"),
             "fecha_fin >" => date("Y-m-d H:i:s")
@@ -127,6 +127,40 @@ class Productos_model extends CI_Model {
         } else {
             return FALSE;
         }
+    }
+
+    public function insertar_categoria($datos) {
+        $claves = [];
+        $valores = [];
+        foreach ($datos as $key => $value) {
+            if ($key == "codigo" || $key == "nombre" || $key == "descripcion" || $key == "anuncio") {
+                $value = "'$value'";
+            } elseif ($key != "productos") {
+                array_push($claves, $key);
+                array_push($valores, $value);
+            }
+        }
+        $claves = implode(", ", $claves);
+        $valores = implode(", ", $valores);
+        echo $claves . "<br />";
+        echo $valores . "<br />";
+        //$this->db->query("insert into categoria ($claves) values ($valores)");
+    }
+
+    public function insertar_productos($datos) {
+        $claves = [];
+        $valores = [];
+        foreach ($datos as $key => $value) {
+            if ($key == "codigo" || $key == "nombre" || $key == "imagen" || $key == "descripcion" || $key == "anuncio") {
+                $value = "'$value'";
+            }
+            array_push($claves, $key);
+            array_push($valores, $value);
+        }
+        $claves = implode(", ", $claves);
+        $valores = implode(", ", $valores);
+
+        $this->db->query("insert into producto ($claves) values ($valores)");
     }
 
 }
