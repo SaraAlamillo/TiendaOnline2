@@ -66,8 +66,8 @@ class Productos_model extends CI_Model {
      * @param int $categoria Identificador de la categoría de la que se devolverán los productos destacados.
      * @return object Listado de todos los datos de los productos destacados.
      */
-    public function listar_destacados($categoria = NULL, $pagina = 0) {
-        $this->db->limit(Home::maxPorPagina, $pagina);
+    public function listar_destacados($categoria = NULL, $pagina = 0, $maximo_pagina = Home::maxPorPagina) {
+        $this->db->limit($maximo_pagina, $pagina);
 
         $intervalo = [
             "fecha_inicio <" => date("Y-m-d H:i:s"),
