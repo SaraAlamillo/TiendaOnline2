@@ -7,7 +7,7 @@ require_once __DIR__ . '/sara.php';
 
 class Home extends Sara {
 
-    const maxPorPagina = 2;
+    const maxPorPagina = 5;
 
     public function __construct() {
         parent::__construct();
@@ -39,7 +39,7 @@ class Home extends Sara {
 
     public function ver_categoria($categoria = NULL, $pagina = 0) {
         $parametrosContenido = [
-            "productos" => $this->productos_model->listar_productos($categoria, $pagina),
+            "productos" => $this->productos_model->listar_productos($categoria, $pagina, TRUE),
             "error" => $this->session->flashdata("mensaje"),
             "paginador" => $this->paginar(site_url("home/ver_categoria/" . $categoria . "/"), $this->productos_model->num_total_productos($categoria))
         ];
