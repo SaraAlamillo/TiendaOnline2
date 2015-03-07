@@ -30,7 +30,7 @@ class Home extends Sara {
         $parametrosContenido = [
             "productos" => $this->productos_model->listar_destacados(NULL, $pagina),
             "error" => $this->session->flashdata("mensaje"),
-            "paginador" => $this->paginar(site_url("home/index/"), $this->productos_model->num_total_destacados())
+            "paginador" => $this->paginar(site_url("home/index/"), $this->productos_model->num_total_destacados(), 3)
         ];
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
 
