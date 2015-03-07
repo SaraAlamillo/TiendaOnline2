@@ -1,6 +1,8 @@
 <div id="productos">
-    <?php foreach ($productos as $p):
-	?>
+    <div class="paginacion">
+    <?= $paginador ?>
+    </div>
+    <?php foreach ($productos as $p): ?>
 	<?= generarVistaProducto($p, $error) ?>
     <?php endforeach; ?>
     <?= $paginador ?>

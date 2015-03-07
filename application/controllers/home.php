@@ -18,6 +18,8 @@ class Home extends Sara {
         $config['per_page'] = self::maxPorPagina;
         $config['total_rows'] = $total;
         $config['uri_segment'] = $segmento;
+        $config['first_link'] = 'Primero';
+        $config['last_link'] = 'Último';
 
         $this->pagination->initialize($config);
 
@@ -43,6 +45,16 @@ class Home extends Sara {
         ];
 
         $contenido = $this->load->view("productos", $parametrosContenido, TRUE);
+
+        $this->vista($contenido);
+    }
+    public function ver_producto($producto) {
+        $parametrosContenido = [
+            "producto" => $this->productos_model->listar_producto($producto),
+            "error" => $this->session->flashdata("mensaje")
+        ];
+
+        $contenido = $this->load->view("ver_producto", $parametrosContenido, TRUE);
 
         $this->vista($contenido);
     }

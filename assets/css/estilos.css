@@ -1,3 +1,7 @@
+.tachado {
+    text-decoration: line-through;
+}
+
 *
 {
     text-decoration: none;
@@ -18,6 +22,11 @@ body
     margin: 20px auto;
     cursor: default;
 
+}
+img {
+    height: 100px;
+    float: left;
+    margin-right: 10px;
 }
 .cabecera2
 {
@@ -207,7 +216,6 @@ label
 .paginacion
 {
     margin: 0 auto;
-    text-align: center;
 }
 .paginacion a:hover
 {

@@ -30,6 +30,7 @@ class Productos_model extends CI_Model {
     public function listar_producto($id) {
         $this->db->where("id", $id);
         $resultado = $this->db->get("producto");
+        $resultado->row()->categoria_nombre = $this->listar_categoria($resultado->row()->categoria)->nombre;
         return $resultado->row();
     }
 
