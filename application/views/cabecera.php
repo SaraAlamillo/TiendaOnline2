@@ -1,5 +1,5 @@
 <div class="cabecera2">
-    <h1 id="titulo">Tienda Online</h1>
+    <h1 id="titulo">SaraSoft - Tienda Online</h1>
     <div class="controles-cabecera">
         <?php if ($logueado): ?>
     <p><?= anchor("usuarios/modificacion", "Mi cuenta") ?></p>
