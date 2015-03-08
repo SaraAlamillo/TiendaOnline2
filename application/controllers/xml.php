@@ -29,8 +29,6 @@ class Xml extends Sara {
                 foreach ($productos as $p) {
                     $xml .= "<producto>\n";
                     foreach ($p as $key => $value) {
-                       // $value = str_replace("<", "&lt;", $value);
-                       // $value = str_replace(">", "&gt;", $value);
                         $xml .= "<$key>" . htmlspecialchars($value) . "</$key>\n";
                     }
                     $xml .= "</producto>\n";
@@ -70,16 +68,24 @@ class Xml extends Sara {
         $categorias = json_decode(json_encode((array) simplexml_load_file($ruta . $fichero)), 1);
 
         foreach ($categorias['categoria'] as &$c) {
+            if (empty($c['anuncio'])) {
+                        $c['anuncio'] = NULL;
+                    } else {
+                        $c['anuncio'] = htmlentities($c['anuncio']);
+                    }
+                    $c['nombre'] = htmlentities($c['nombre']);
+                    $c['descripcion'] = htmlentities($c['descripcion']);
             $productos = $c['productos'];
             unset($c['productos']);
             unset($c['id']);
-            //$categoria = $this->productos_model->insertar_categoria($c);
-            $categoria = 0;
+            
+            $categoria = $this->productos_model->insertar_categoria($c);
+            
             if (!empty($productos)) {
                 foreach ($productos['producto'] as &$p) {
                     unset($p['id']);
                     if (empty($p['anuncio'])) {
-                        $p['anuncio'] = "";
+                        $p['anuncio'] = NULL;
                     } else {
                         $p['anuncio'] = htmlentities($p['anuncio']);
                     }
@@ -87,8 +93,8 @@ class Xml extends Sara {
                     $p['descripcion'] = htmlentities($p['descripcion']);
 
                     $p['categoria'] = $categoria;
-
-                    //$this->productos_model->insertar_productos($p);
+                   
+                    $this->productos_model->insertar_productos($p);
                 }
             }
         }
