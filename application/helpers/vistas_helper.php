@@ -5,7 +5,7 @@ if (!function_exists('generarVistaProducto')) {
         ob_start();
         ?>
         <div id="producto">
-            <form action="<?= site_url("home/comprar") ?>" method="POST">
+            <form action="<?= site_url("compra/agregar") ?>" method="POST">
                 <?php if ($version_extendida): ?>
                     <p><?= anchor("home/ver_categoria/$producto->categoria", "Volver a la categoría") ?></p>
                 <?php endif; ?>

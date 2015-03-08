@@ -20,7 +20,7 @@
     </table>
     <br />
     <button><?= anchor("compra/confirmar_productos", "Anterior") ?></button>
-    <button><?= anchor("home/consultar_carrito", "Cancelar") ?></button>
+    <button><?= anchor("compra/consultar_carrito", "Cancelar") ?></button>
     <button><?= anchor("compra/realizar_pedido", "Siguiente") ?></button>
 </div>
 

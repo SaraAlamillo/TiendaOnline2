@@ -15,14 +15,14 @@
 	    <td><?=$p['precio'] ?></td>
 	    <td><?=$p['cantidad'] ?></td>
 	    <td><?=$p['precio'] * $p['cantidad'] ?></td>
-	    <td><?=anchor("home/eliminar_producto_carrito/${p['id']}", "Eliminar del carrito") ?></td>
+	    <td><?=anchor("compra/eliminar_producto_carrito/${p['id']}", "Eliminar del carrito") ?></td>
 	</tr>
 	<?php endforeach; ?>
     </table>
     <br />
     <?php if ($logueado): ?>
     <button><?= anchor("compra/confirmar_productos", "Comprar productos") ?></button>
-    <button><?= anchor("home/vaciar_carrito", "Vaciar carrito") ?></button>
+    <button><?= anchor("compra/vaciar_carrito", "Vaciar carrito") ?></button>
     
     <?php else: ?>
     <button disabled="disabled">Comprar productos</button> <br />

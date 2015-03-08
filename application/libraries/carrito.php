@@ -6,16 +6,13 @@ if (!defined('BASEPATH'))
 class Carrito {
 
     private $contenido;
-    private $sesion;
+    private $session;
 
-    public function __construct($parametros = NULL) {
-        if (!is_null($parametros)) {
-            $this->sesion = $parametros['session'];
-            if ($parametros['session']->userdata('carrito')) {
-                $this->contenido = $parametros['session']->userdata('carrito');
-            } else {
-                $this->contenido = [];
-            }
+    public function __construct() {
+        $this->session = & get_instance()->session;
+        
+        if ($this->session->userdata('carrito')) {
+            $this->contenido = $this->session->userdata('carrito');
         } else {
             $this->contenido = [];
         }
@@ -48,7 +45,7 @@ class Carrito {
     }
 
     public function actualizar_sesion() {
-        $this->sesion->set_userdata(["carrito" => $this->contenido]);
+        $this->session->set_userdata(["carrito" => $this->contenido]);
     }
 
     public function vaciar_carrito() {

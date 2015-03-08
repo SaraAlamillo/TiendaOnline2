@@ -3,8 +3,10 @@
         <input type="file" name="userfile" value="fichero"/>
         <input type="submit" value="Importar" />
     </form>
-    <?php if(isset($error)): ?>
-    <?= $error ?>
+    <?php if(isset($subido)): ?>
+    <p><?= $subido ?> </p>
+    <?php elseif(isset($error)): ?>
+    <p><?= $error ?></p>
     <?php endif; ?>
 </div>
 

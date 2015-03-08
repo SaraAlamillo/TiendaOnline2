@@ -29,9 +29,9 @@ class Xml extends Sara {
                 foreach ($productos as $p) {
                     $xml .= "<producto>\n";
                     foreach ($p as $key => $value) {
-                        $value = str_replace("<", "&lt;", $value);
-                        $value = str_replace(">", "&gt;", $value);
-                        $xml .= "<$key>$value</$key>\n";
+                       // $value = str_replace("<", "&lt;", $value);
+                       // $value = str_replace(">", "&gt;", $value);
+                        $xml .= "<$key>" . htmlspecialchars($value) . "</$key>\n";
                     }
                     $xml .= "</producto>\n";
                 }
@@ -53,15 +53,17 @@ class Xml extends Sara {
         $config['upload_path'] = $ruta;
         $config['allowed_types'] = 'xml';
         $this->load->library('upload', $config);
-        $parametros = [];
+        $vista = [
+            "subido" => $this->session->flashdata("subido") != ""? $this->session->flashdata("subido") : NULL
+        ];
         if ($this->upload->do_upload()) {
             $fichero = $this->upload->data()["file_name"];
             $this->importar($fichero, $ruta);
             exit();
         } else {
-            $parametros['error'] = $this->upload->display_errors();
+            $vista['error'] = $this->upload->display_errors();
         }
-        $this->load->view('importar_xml', $parametros);
+        $this->vista('importar_xml', $vista);
     }
 
     public function importar($fichero, $ruta) {
@@ -71,23 +73,28 @@ class Xml extends Sara {
             $productos = $c['productos'];
             unset($c['productos']);
             unset($c['id']);
-            $categoria = $this->productos_model->insertar_categoria($c);
+            //$categoria = $this->productos_model->insertar_categoria($c);
+            $categoria = 0;
             if (!empty($productos)) {
                 foreach ($productos['producto'] as &$p) {
                     unset($p['id']);
                     if (empty($p['anuncio'])) {
                         $p['anuncio'] = "";
+                    } else {
+                        $p['anuncio'] = htmlentities($p['anuncio']);
                     }
-                    $p['nombre'] = utf8_decode($p['nombre']);
-                    $p['descripcion'] = utf8_decode($p['descripcion']);
+                    $p['nombre'] = htmlentities($p['nombre']);
+                    $p['descripcion'] = htmlentities($p['descripcion']);
 
                     $p['categoria'] = $categoria;
 
-                    $this->productos_model->insertar_productos($p);
+                    //$this->productos_model->insertar_productos($p);
                 }
             }
         }
         unlink($ruta . $fichero);
+        $this->session->set_flashdata("subido", "Se ha importado correctamente los datos");
+        redirect(site_url("xml/subir_fichero"));
     }
 
 }

@@ -22,6 +22,22 @@ class Usuarios extends Sara {
         $this->form_validation->set_rules('cp', 'código postal', 'callback_cp_check');
         $this->form_validation->set_rules('provincia', 'provincia', 'callback_provincia_check');
     }
+    
+    public function acceder() {
+        if ($this->usuarios_model->existe_usuario($this->input->post('usuario'), $this->input->post('clave'))) {
+            $id = $this->usuarios_model->conseguir_id("usuario", $this->input->post('usuario'));
+            $this->session->set_userdata('usuario', $id);
+            redirect($this->input->post('url'));
+        } else {
+            $this->session->set_flashdata("login", "Login incorrecto.");
+            redirect($this->input->post('url'));
+        }
+    }
+
+    public function salir() {
+        $this->session->unset_userdata('usuario');
+        redirect(site_url());
+    }
 
     public function registro() {
 
@@ -37,14 +53,11 @@ class Usuarios extends Sara {
             }
         }
 
-        $parametrosContenido = [
+        $vista = [
             "provincias" => $this->usuarios_model->listar_provincias()
         ];
 
-        $contenido = $this->load->view("registro", $parametrosContenido, TRUE);
-        
-
-        $this->vista($contenido);
+        $this->vista("registro", $vista);
     }
 
     public function modificacion() {
@@ -68,15 +81,14 @@ class Usuarios extends Sara {
             }
         }
 
-        $parametrosContenido = [
-            "provincias" => $this->usuarios_model->listar_provincias(), 
-            "datos" => $datos, 
+        $vista = [
+            "provincias" => $this->usuarios_model->listar_provincias(),
+            "datos" => $datos,
             "mensaje" => $this->session->flashdata("mensaje")
-                ];
+        ];
 
-        $contenido = $this->load->view("modificacion", $parametrosContenido, TRUE);
 
-        $this->vista($contenido);
+        $this->vista("modificacion", $vista);
     }
 
     public function usuario_check($input) {
@@ -163,7 +175,7 @@ class Usuarios extends Sara {
 
     public function quitar_usuario() {
         $this->usuarios_model->actualizar_datos($this->session->userdata('usuario'), ['activo' => 0]);
-        redirect(site_url("home/cerrar_sesion"));
+        $this->salir();
     }
 
 }

@@ -1,4 +1,5 @@
 <div id="pedidos">
+    <p><?= anchor("pedido/listado", "Volver atrás") ?></p>
    <table border="1">
 	<tr>
 	    <td>Producto</td>

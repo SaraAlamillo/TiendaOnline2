@@ -17,7 +17,7 @@
 	<?php endforeach; ?>
     </table>
     <br />
-    <button><?= anchor("home/consultar_carrito", "Cancelar") ?></button>
+    <button><?= anchor("compra/consultar_carrito", "Cancelar") ?></button>
     <button><?= anchor("compra/confirmar_usuario", "Siguiente") ?></button>
 </div>
 
