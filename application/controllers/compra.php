@@ -57,8 +57,19 @@ class Compra extends Sara {
         $this->vista($contenido);
     }
 
-    function enviar_detalle() {
+    function enviar_detalle($pedido) {
+        $email = $this->usuarios_model->listar_usuario($this->session->userdata('usuario'))->email;
+
+        $parametrosContenido = [
+            "contenido" => $this->pedidos_model->listar_productos_pedido($pedido)
+        ];
+
+        $mensaje = $this->load->view("contenido_pedido", $parametrosContenido, TRUE);
+
+        $this->email($pedido, $email, $mensaje);
+
         
+        redirect(site_url("compra/mensaje_final"));
     }
 
     function enviar_pdf($pedido) {
