@@ -2,7 +2,7 @@
     <form action="" method="POST">
         Usuario <input type="text" name="usuario" value="<?=set_value('usuario') ?>" /> <br />
         <?= form_error('usuario') . "<br />" ?>
-        Contrasenia <input type="text" name="contrasenia" value="<?=set_value('contrasenia') ?>" /> <br />
+        Contraseña <input type="text" name="contrasenia" value="<?=set_value('contrasenia') ?>" /> <br />
         <?= form_error('contrasenia') . "<br />" ?>
         Correo electrónico <input type="text" name="email" value="<?=set_value('email') ?>" /> <br />
         <?= form_error('email') . "<br />" ?>

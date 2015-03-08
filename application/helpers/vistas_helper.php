@@ -31,7 +31,7 @@ if (!function_exists('generarVistaProducto')) {
                 <?php endif; ?>
                 <input type="hidden" name="id" value="<?= $producto->id ?>" />
                 <input type="hidden" name="url" value="<?= current_url() ?>" />
-                <input type="text" size="5" name="cantidad" value="" /><input type="submit" value="Comprar" />
+                <p>Cantidad: <input type="text" size="5" name="cantidad" value="" /><input type="submit" value="Comprar" /></p>
                 <?php if ($error['id'] == $producto->id): ?>
                     <p><?= $error['mensaje'] ?></p>
                 <?php endif; ?>

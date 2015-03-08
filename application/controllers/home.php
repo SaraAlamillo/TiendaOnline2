@@ -48,6 +48,7 @@ class Home extends Sara {
 
         $this->vista($contenido);
     }
+
     public function ver_producto($producto) {
         $parametrosContenido = [
             "producto" => $this->productos_model->listar_producto($producto),
@@ -60,14 +61,19 @@ class Home extends Sara {
     }
 
     public function comprar() {
-        if ($this->input->post('cantidad') <= $this->productos_model->obtener_stock($this->input->post('id'))) {
-            $this->productos_model->modificar_stock($this->input->post('id'), "-", $this->input->post('cantidad'));
-            $this->carrito->set_contenido([
-                "id" => $this->input->post('id'),
-                "cantidad" => $this->input->post('cantidad')
-            ]);
+        if ($this->input->post('cantidad') <= 0 || !is_numeric($this->input->post('cantidad'))) {
+            $this->session->set_flashdata("mensaje", ['id' => $this->input->post('id'), 'mensaje' => '¿Enserio?']);
         } else {
-            $this->session->set_flashdata("mensaje", ['id' => $this->input->post('id'), 'mensaje' => 'No hay suficiente stock']);
+            if ($this->input->post('cantidad') <= $this->productos_model->obtener_stock($this->input->post('id'))) {
+                $this->productos_model->modificar_stock($this->input->post('id'), "-", $this->input->post('cantidad'));
+                $this->carrito->set_contenido([
+                    "id" => $this->input->post('id'),
+                    "cantidad" => $this->input->post('cantidad')
+                ]);
+                $this->session->set_flashdata("mensaje", ['id' => $this->input->post('id'), 'mensaje' => 'Añadido al carrito']);
+            } else {
+                $this->session->set_flashdata("mensaje", ['id' => $this->input->post('id'), 'mensaje' => 'No hay suficiente stock']);
+            }
         }
         redirect($this->input->post('url'));
     }
@@ -95,9 +101,10 @@ class Home extends Sara {
         if ($this->usuarios_model->existe_usuario($this->input->post('usuario'), $this->input->post('clave'))) {
             $id = $this->usuarios_model->conseguir_id("usuario", $this->input->post('usuario'));
             $this->session->set_userdata('usuario', $id);
-            redirect(site_url());
+            redirect($this->input->post('url'));
         } else {
-            redirect(site_url());
+            $this->session->set_flashdata("login", "Login incorrecto.");
+            redirect($this->input->post('url'));
         }
     }
 

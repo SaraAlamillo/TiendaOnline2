@@ -11,7 +11,11 @@ class Sara extends CI_Controller {
     }
 
     public function vista($contenido) {
-        $parametros['cabecera'] = $this->load->view("cabecera", ["logueado" => $this->logueado()], TRUE);
+        $cabecera = [
+            "logueado" => $this->logueado(),
+            "login" => $this->session->flashdata("login")
+                ];
+        $parametros['cabecera'] = $this->load->view("cabecera", $cabecera, TRUE);
 
         $parametros['menu'] = $this->load->view("menu", ["categorias" => $this->productos_model->listar_categorias()], TRUE);
 
